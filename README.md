@@ -106,6 +106,11 @@ There is no telemetry.
 Watchdog uses Android's own classes and the Kotlin standard library (JetBrains, Apache-2.0). It depends on no other
 package.
 
+## Automated checks
+
+[![CodeQL Advanced](https://github.com/SCgrS/Watchdog/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/SCgrS/Watchdog/actions/workflows/codeql.yml)\
+[![Dependency Review](https://github.com/SCgrS/Watchdog/actions/workflows/dependency-review.yml/badge.svg?branch=main)](https://github.com/SCgrS/Watchdog/actions/workflows/dependency-review.yml)
+
 ---
 
 Questions and feedback: [x.com/CgrShn](https://x.com/CgrShn)

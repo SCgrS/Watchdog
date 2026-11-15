@@ -100,6 +100,11 @@ olmadığı saklanır. Bu kayıt buluta yedeklenmez ve yeni telefona aktarılmaz
 Watchdog Android'in kendi sınıflarını ve Kotlin'in standart kütüphanesini (JetBrains, Apache-2.0) kullanır. Başka hiçbir
 pakete bağlı değildir.
 
+## Otomatik denetimler
+
+[![CodeQL Advanced](https://github.com/SCgrS/Watchdog/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/SCgrS/Watchdog/actions/workflows/codeql.yml)\
+[![Dependency Review](https://github.com/SCgrS/Watchdog/actions/workflows/dependency-review.yml/badge.svg?branch=main)](https://github.com/SCgrS/Watchdog/actions/workflows/dependency-review.yml)
+
 ---
 
 Soru ve geri bildirimler için: [x.com/CgrShn](https://x.com/CgrShn)
