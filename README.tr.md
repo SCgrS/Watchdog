@@ -39,8 +39,10 @@ Uygulamayı kaynak kodundan derlemek için [docs/DEVELOPMENT.md](docs/DEVELOPMEN
 
 ## Öne çıkanlar
 
-- **Yalnızca okur:** Ayar değiştirme, internet, erişilebilirlik ve cihaz yöneticisi izni yoktur. Yalnız iki izin ister:
-  Bildirim göstermek ve telefon açılınca denetimi yeniden kurmak.
+- **Kesin kural:** Uygulama hiçbir ayarı değiştiremez. `WRITE_SECURE_SETTINGS` izni, erişilebilirlik servisi, cihaz
+  yöneticisi, Shizuku, root ve `INTERNET` izni yoktur. Ayarları yalnızca okur, bildirim gösterir ve ilgili ayar
+  sayfasını açar. Kapatmayı siz yaparsınız. Yalnız iki izin ister: Bildirim göstermek ve telefon açılınca denetimi
+  yeniden kurmak.
 - **İki ayar:** Denetim aralığını (saatte bir ile haftada bir arası) ve dili (İngilizce ya da Türkçe) seçersiniz.
 - **Kapanınca susar:** Ayarı kapattığınız anda bildirim kalkar.
 - **Az kaynak:** Arka planda sürekli çalışmaz. Sistem denetim anında uygulamayı kısa bir an uyandırır. Paket yaklaşık 80 KB'tır,

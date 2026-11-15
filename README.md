@@ -40,8 +40,10 @@ To build the app from its source code, see [docs/DEVELOPMENT.md](docs/DEVELOPMEN
 
 ## Highlights
 
-- **Read only:** No permission to change settings, no internet, no accessibility or device admin access. It asks for
-  only two permissions: Showing notifications and setting up the check again when the phone starts.
+- **Hard rule:** The app cannot change any setting. It has no `WRITE_SECURE_SETTINGS` permission, no accessibility
+  service, no device admin, no Shizuku, no root and no `INTERNET` permission. It only reads settings, shows a
+  notification and opens the matching settings page. You turn the settings off yourself. It asks for only two
+  permissions: Showing notifications and setting up the check again when the phone starts.
 - **Two settings:** You choose the check interval (from every hour to every week) and the language (English or Turkish).
 - **Quiet when off:** The notification goes away as soon as you turn the setting off.
 - **Light:** It does not run in the background all the time. The system wakes it for a moment at check time. The package
