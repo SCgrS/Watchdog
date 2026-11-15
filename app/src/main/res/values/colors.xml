@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Graphite neutral ramp: Surfaces and text stay colorless, color appears only in the status lamps (an instrument panel
+    on a night shift). The app comes only with a dark theme.
+-->
+<resources>
+    <color name="background">#FF121314</color>
+    <color name="card">#FF1B1C1E</color>
+    <color name="card_raised">#FF222326</color>
+    <color name="choice_selected">#FF2C2E31</color>
+    <color name="divider">#FF2A2C2F</color>
+    <color name="divider_strong">#FF3B3D41</color>
+
+    <color name="text">#FFECEDEE</color>
+    <color name="text_secondary">#FFA9ABAF</color>
+    <color name="text_muted">#FF7D8085</color>
+
+    <!-- Primary button: Off-white surface, dark text. -->
+    <color name="button_background">#FFECEDEE</color>
+    <color name="button_text">#FF121314</color>
+
+    <!-- Status lamps. Green fine, amber left on, grey unknown. The accent also marks the chosen option. -->
+    <color name="accent">#FF5FBF8C</color>
+    <color name="lamp_safe">#FF5FBF8C</color>
+    <color name="lamp_risk">#FFE9A94B</color>
+    <color name="lamp_neutral">#FF6E7176</color>
+    <color name="text_risk">#FFEDB45E</color>
+
+    <color name="warning_background">#FF272117</color>
+    <color name="warning_border">#FF4A3B1F</color>
+</resources>

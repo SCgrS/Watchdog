@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Background of the app icon: Vermilion. Contrast with the white symbol is 3.9:1 (at least 3:1 for WCAG 1.4.11). -->
+    <color name="icon_background">#FFE0502A</color>
+    <!-- Color of the small icon in notifications, the same as the app icon. -->
+    <color name="brand">#FFE0502A</color>
+</resources>

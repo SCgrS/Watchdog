@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Turkish texts. Setting names follow Samsung's Turkish One UI (Geliştirici seçenekleri, Otomatik Engelleyici). -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="tagline">Açık unutulan hata ayıklama ayarlarını hatırlatır</string>
+
+    <!-- Status -->
+    <string name="status_title">Durum</string>
+    <string name="usb_debugging">USB hata ayıklama</string>
+    <string name="wireless_debugging">Kablosuz hata ayıklama</string>
+    <string name="auto_blocker">Otomatik Engelleyici</string>
+    <string name="location_developer_options">Geliştirici seçenekleri</string>
+    <string name="location_security">Güvenlik ve gizlilik</string>
+    <string name="state_on">Açık</string>
+    <string name="state_off">Kapalı</string>
+    <string name="state_unknown">Bilinmiyor</string>
+    <string name="state_absent">Yok</string>
+    <string name="summary_all_clear">Ayarlar yerinde</string>
+    <string name="summary_one_on">%1$s açık</string>
+    <!-- In Turkish the noun stays singular after a number, no plural form is needed. -->
+    <string name="summary_many_on" tools:ignore="PluralsCandidate">%1$d ayar açık</string>
+    <string name="summary_auto_blocker_off">Otomatik Engelleyici kapalı</string>
+    <string name="summary_debugging_off">Hata ayıklama kapalı</string>
+    <string name="last_check">Son denetim %1$s</string>
+    <string name="auto_blocker_unknown_note">Hata ayıklamayı kapattığınızda Otomatik Engelleyici\'yi açmanız hatırlatılır.</string>
+
+    <!-- Checks -->
+    <string name="check">Denetle</string>
+    <string name="check_result">Denetlendi: %1$s</string>
+    <string name="checks_title">Denetim</string>
+    <string name="check_interval">Denetim aralığı</string>
+    <string name="check_interval_description">Açık ayar varsa bildirim gelir</string>
+    <string name="next_check">Sonraki denetim</string>
+    <string name="cancel">Vazgeç</string>
+
+    <!-- App -->
+    <string name="app_title">Uygulama</string>
+    <string name="language">Dil</string>
+    <string name="language_description">Ekran ve bildirimler bu dilde</string>
+
+    <!-- Warnings -->
+    <string name="notifications_off">Bildirimler kapalı. Hatırlatmalar görünmez.</string>
+    <string name="allow_notifications">Bildirimlere izin ver</string>
+    <string name="background_restricted">Pil ayarında uygulama kısıtlanmış. Denetimler yapılmayabilir.</string>
+    <string name="can_sleep">Samsung kullanılmayan uygulamaları uyutabilir. O zaman hatırlatmalar gelmez. Uygulama bilgisinde Pil bölümünden Kısıtlanmamış\'ı seçin.</string>
+    <string name="open_battery_settings">Pil ayarını aç</string>
+    <string name="can_be_paused">Uygulamayı uzun süre açmazsanız Android onu duraklatabilir. O zaman denetimler durur. Uygulama bilgisinde Kullanılmayan uygulamayı yönet bölümündeki anahtarı kapatın.</string>
+    <string name="open_pause_settings">Duraklatma ayarını aç</string>
+
+    <string name="assurance">Bu uygulama ayarları yalnızca okur. Hiçbir ayarı değiştiremez ve internete bağlanamaz.</string>
+
+    <!-- Notifications -->
+    <string name="channel_name">Güvenlik hatırlatmaları</string>
+    <string name="channel_description">Açık kalan hata ayıklama ayarları ve kapalı Otomatik Engelleyici</string>
+    <string name="notification_usb_title">USB hata ayıklama hâlâ açık</string>
+    <string name="notification_wireless_title">Kablosuz hata ayıklama hâlâ açık</string>
+    <string name="notification_both_title">USB ve kablosuz hata ayıklama hâlâ açık</string>
+    <string name="notification_debugging_text">Açık olanlar: %1$s.</string>
+    <string name="notification_auto_blocker_too">Kapattıktan sonra Otomatik Engelleyici\'yi de açın.</string>
+    <string name="notification_auto_blocker_off_title">Otomatik Engelleyici kapalı</string>
+    <string name="notification_auto_blocker_off_text">Telefonunuzu korumak için yeniden açın. Ayar sayfası için dokunun.</string>
+    <string name="notification_auto_blocker_reminder_title">Şimdi Otomatik Engelleyici\'yi açın</string>
+    <string name="notification_auto_blocker_reminder_text">Hata ayıklama ayarları kapandı. Otomatik Engelleyici\'yi yeniden açmak için dokunun.</string>
+    <string name="notification_lock_screen_text">Bir hatırlatma var</string>
+</resources>

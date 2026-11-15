@@ -1,0 +1,11 @@
+# The app depends on no runtime library: Only Android's own classes and the Kotlin standard library (shrunk by R8 at
+# build time). JUnit is used only in unit tests.
+[versions]
+agp = "9.4.1"
+junit = "4.13.2"
+
+[libraries]
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Choice ring: An empty ring for other options, a green ring with a dot for the chosen one (the same visual language as
+    the status lamps). Follows the row's selected state.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_selected="true">
+        <layer-list>
+            <item>
+                <shape android:shape="oval">
+                    <stroke android:width="2dp" android:color="@color/accent" />
+                    <size android:width="20dp" android:height="20dp" />
+                </shape>
+            </item>
+            <item android:bottom="5dp" android:left="5dp" android:right="5dp" android:top="5dp">
+                <shape android:shape="oval">
+                    <solid android:color="@color/accent" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <stroke android:width="1.5dp" android:color="@color/text_muted" />
+            <size android:width="20dp" android:height="20dp" />
+        </shape>
+    </item>
+</selector>

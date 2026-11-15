@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    English texts, the default language. Turkish ones are in values-tr. Setting names follow Samsung's English One UI
+    (Developer options, Auto Blocker).
+-->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- The app's name is the same in every language. -->
+    <string name="app_name" translatable="false">Watchdog</string>
+    <string name="tagline">Reminds you of debugging settings left on</string>
+
+    <!-- Status -->
+    <string name="status_title">Status</string>
+    <string name="usb_debugging">USB debugging</string>
+    <string name="wireless_debugging">Wireless debugging</string>
+    <string name="auto_blocker">Auto Blocker</string>
+    <!-- Under the status rows: Where the setting lives on the phone. -->
+    <string name="location_developer_options">Developer options</string>
+    <string name="location_security">Security and privacy</string>
+    <string name="state_on">On</string>
+    <string name="state_off">Off</string>
+    <string name="state_unknown">Unknown</string>
+    <string name="state_absent">Not available</string>
+    <string name="summary_all_clear">All clear</string>
+    <string name="summary_one_on">%1$s on</string>
+    <!-- Only shown when two or more settings are on, so the plural form is always right. -->
+    <string name="summary_many_on" tools:ignore="PluralsCandidate">%1$d settings on</string>
+    <string name="summary_auto_blocker_off">Auto Blocker off</string>
+    <string name="summary_debugging_off">Debugging off</string>
+    <string name="last_check">Last check %1$s</string>
+    <string name="auto_blocker_unknown_note">When you turn off debugging, you will be reminded to turn Auto Blocker on.</string>
+
+    <!-- Checks -->
+    <string name="check">Check</string>
+    <string name="check_result">Checked: %1$s</string>
+    <string name="checks_title">Checks</string>
+    <string name="check_interval">Check interval</string>
+    <string name="check_interval_description">Notifies you if a setting is on</string>
+    <string name="next_check">Next check</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- App -->
+    <string name="app_title">App</string>
+    <string name="language">Language</string>
+    <string name="language_description">For the screen and notifications</string>
+
+    <!-- Warnings -->
+    <string name="notifications_off">Notifications are off. Reminders will not appear.</string>
+    <string name="allow_notifications">Allow notifications</string>
+    <string name="background_restricted">The app is restricted in battery settings. Checks may not run.</string>
+    <string name="can_sleep">Samsung can put unused apps to sleep. If that happens, reminders will not arrive. In App info, open Battery and choose Unrestricted.</string>
+    <string name="open_battery_settings">Open battery settings</string>
+    <string name="can_be_paused">If you do not open the app for a long time, Android can pause it, which stops the checks. In App info, turn off Manage app if unused.</string>
+    <string name="open_pause_settings">Open unused app settings</string>
+
+    <string name="assurance">This app only reads settings. It cannot change any setting or connect to the internet.</string>
+
+    <!-- Notifications -->
+    <string name="channel_name">Security reminders</string>
+    <string name="channel_description">Debugging settings left on and Auto Blocker turned off</string>
+    <string name="notification_usb_title">USB debugging is still on</string>
+    <string name="notification_wireless_title">Wireless debugging is still on</string>
+    <string name="notification_both_title">USB and wireless debugging are still on</string>
+    <string name="notification_debugging_text">Still on: %1$s.</string>
+    <string name="notification_auto_blocker_too">Afterwards, turn Auto Blocker back on too.</string>
+    <string name="notification_auto_blocker_off_title">Auto Blocker is off</string>
+    <string name="notification_auto_blocker_off_text">Turn it back on to protect your phone. Tap to open its settings.</string>
+    <string name="notification_auto_blocker_reminder_title">Turn on Auto Blocker now</string>
+    <string name="notification_auto_blocker_reminder_text">Debugging settings are off. Tap to turn Auto Blocker back on.</string>
+    <string name="notification_lock_screen_text">You have a reminder</string>
+</resources>

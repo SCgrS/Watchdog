@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome layer of the themed icon: The same silhouette as the foreground, the prongs are holes. The system colors it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+        android:pathData="M44,28H64A3,3 0 0,1 67,31V44H41V31A3,3 0 0,1 44,28Z M45,33H51V37H45Z M57,33H63V37H57Z" />
+    <path android:fillColor="#FFFFFFFF"
+        android:pathData="M38,48H70A6,6 0 0,1 76,54V60C76,71 67,78 54,82C41,78 32,71 32,60V54A6,6 0 0,1 38,48Z" />
+</vector>
