@@ -1,0 +1,29 @@
+Watchdog reminds you of debugging settings you left on, and of Samsung's Auto Blocker you turned off.
+
+Turning on USB debugging or wireless debugging for a task takes a moment. Turning it off afterwards is easy to forget, and the phone stays open for days. Watchdog checks these settings at the interval you choose (weekly by default) and reminds you with a notification while one is still on. Tapping the notification opens the app, and tapping a setting opens its page in Settings. You turn the setting off yourself: Watchdog cannot change any setting.
+
+What it watches
+• USB debugging
+• Wireless debugging
+• Auto Blocker on Samsung phones (One UI 6 and later)
+
+How it works
+• Checks at the interval you choose, from every hour to every week.
+• While a setting is on, the reminder comes back at every interval.
+• The notification goes away as soon as you turn the setting off.
+• The Check button looks at the settings right away.
+• Tapping a row opens the setting, scrolled into view in Developer options.
+• Android does not let apps read Auto Blocker's status. So on Samsung phones, as soon as you turn debugging off, a one-time reminder asks you to turn Auto Blocker back on.
+• English and Turkish, chosen in the app.
+
+Reads only
+• No permission to change settings, no accessibility service, no device admin, no root.
+• No internet permission: Nothing leaves your phone.
+• Only two permissions: Notifications, and setting up the next check again after a restart.
+• No ads, no analytics, no account.
+• Nothing runs in the background all the time. The system wakes the app for a moment at check time.
+
+Open source
+Watchdog is free software under the AGPL-3.0 license. The source code is on GitHub: github.com/SCgrS/Watchdog
+
+Watchdog is not affiliated with Samsung. Auto Blocker is a feature of Samsung's One UI.

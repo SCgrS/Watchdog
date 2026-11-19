@@ -37,3 +37,18 @@ uses-permission: name='android.permission.RECEIVE_BOOT_COMPLETED'"
     fi
     echo "Permission check passed: The release package asks only for POST_NOTIFICATIONS and RECEIVE_BOOT_COMPLETED."
 fi
+
+# Google Play refuses a bundle signed with the debug key. A fresh clone without the release key in local.properties
+# still builds one, so its signer is shown and a debug signature stops the script.
+AAB="$ROOT/app/build/outputs/bundle/release/app-release.aab"
+if [ -f "$AAB" ] && [ "$AAB" -nt "$ROOT/.tmp/build-start" ]; then
+    SIGNER="$("$JAVA_HOME/bin/keytool" -printcert -jarfile "$AAB" | grep -m 1 '^Owner:' | tr -d '\r')"
+    echo "Bundle signer: $SIGNER"
+    case "$SIGNER" in
+        *"CN=Watchdog"*) ;;
+        *)
+            echo "The bundle is not signed with Watchdog's release key (the upload key for Google Play)." >&2
+            exit 1
+            ;;
+    esac
+fi

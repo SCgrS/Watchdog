@@ -58,9 +58,59 @@ In Git Bash, in the project folder:
   removing the app (its interval, language and battery setting would have to be set again).
 - For a release, the package is copied to `dist/` (ignored by Git) and attached to the GitHub release as `Watchdog.apk`.
   The README's download link points to `releases/latest/download/Watchdog.apk`, so the file name stays the same in every
-  release. The version is `versionName` (0.1.0) and `versionCode` (3) in `app/build.gradle.kts`. Every release raises
-  both: `versionCode` by one, `versionName` in its last digit.
+  release. The version is `versionName` (0.1.1) and `versionCode` (4) in `app/build.gradle.kts`. Every release raises
+  both: `versionCode` by one, `versionName` in its last digit. GitHub and Google Play share the numbers: Play accepts
+  an upload only with a `versionCode` higher than every earlier upload.
 - Unit tests run only for the debug variant (`testDebugUnitTest`, the AGP 9 default).
+
+## Google Play
+
+The app is published on Google Play as well as on GitHub. The package name `com.cgrshn.watchdog` is permanent on Play.
+
+- **Signing:** Play App Signing with a key that Google generated and keeps (decided 2026-11-19). Watchdog's release key
+  is the upload key: The bundle uploaded to Play is signed with it, and Play signs the packages it delivers with its own
+  key. The Play version and the GitHub APK therefore carry different signatures and cannot update each other. Moving
+  from one to the other means removing the app first (its interval, language and battery setting have to be set again).
+  The certificate of Play's key is shown in Play Console under Test and release › App integrity › App signing.
+- **Bundle:** Play takes an Android App Bundle, not an APK.
+
+  ```bash
+  ./tools/build.sh testDebugUnitTest bundleRelease lintDebug
+  ```
+
+  The bundle is `app/build/outputs/bundle/release/app-release.aab`. `ManifestCheck` runs before it is packaged, and
+  `tools/build.sh` stops if the bundle is not signed with the release key (Play refuses a debug signature). R8's mapping
+  file goes inside the bundle, so Play can show readable stack traces. For an upload, the bundle is copied to `dist/` as
+  `Watchdog-<versionName>.aab`.
+- **Store listing:** The texts and pictures are in `fastlane/metadata/android/<locale>/` (`en-US` is the default
+  language, `tr-TR` the Turkish one), in the layout fastlane and F-Droid read: `title.txt` (at most 30 characters),
+  `short_description.txt` (80), `full_description.txt` (4000), `changelogs/<versionCode>.txt` (500, the "What's new"
+  text) and `images/`. The pictures are drawn by `tools/play_graphics.py` (Python with Pillow, headless Chrome, Roboto
+  from Google Fonts): `icon.png` (512 × 512, 32-bit PNG, the adaptive icon's visible 72 dp filling the square, Play adds
+  the corners), `featureGraphic.png` (1024 × 500, no alpha) and `phoneScreenshots/` (1080 × 1920, a caption above a
+  screenshot from `docs/`). Play accepts a long side of at most twice the short side, so the phone's own screenshots are
+  cut at the bottom. After the screenshots in `docs/` change, run the script again.
+- **Privacy policy:** `PRIVACY.md`, in English and Turkish. Play Console links to
+  `https://github.com/SCgrS/Watchdog/blob/main/PRIVACY.md`, so the file must stay at that path.
+- **Play Console declarations (App content):**
+
+  | Section | Answer |
+  |---|---|
+  | Privacy policy | The `PRIVACY.md` address above |
+  | App access | All functionality is available without special access |
+  | Ads | No ads |
+  | Content rating | Category "All other app types", every question No |
+  | Target audience | 18 and over |
+  | Data safety | No data collected, no data shared. No internet permission, so nothing leaves the phone |
+  | Government app, financial features, health, news | No |
+  | Category | Tools |
+
+- **Testing before release:** The developer account is a personal account opened after 13 November 2023. Google Play
+  makes such an account run a closed test with at least 12 testers who stay opted in for 14 days in a row before it can
+  apply for production access.
+- **Words:** The listing does not claim that the app protects the phone (it only reminds), does not suggest installing
+  apps from outside Play, and says that Watchdog is not affiliated with Samsung. The title is plain "Watchdog": Play
+  allows several apps with the same title, and other apps called Watchdog already exist there.
 
 ## Security setup
 

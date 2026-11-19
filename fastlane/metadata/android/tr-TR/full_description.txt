@@ -1,0 +1,29 @@
+Watchdog, açık unuttuğunuz hata ayıklama ayarlarını ve Samsung telefonlarda kapattığınız Otomatik Engelleyici'yi hatırlatır.
+
+Bir iş için USB hata ayıklamayı ya da kablosuz hata ayıklamayı açmak bir anlık iştir. İş bitince kapatmak çoğu zaman unutulur ve telefon günlerce açık kalır. Watchdog seçtiğiniz aralıkta (varsayılan haftada bir) bu ayarlara bakar, açık kalan varsa bildirimle hatırlatır. Bildirime dokununca uygulama açılır, bir ayara dokununca Ayarlar'daki sayfası açılır. Ayarı kapatmayı siz yaparsınız: Watchdog hiçbir ayarı değiştiremez.
+
+Neye bakar
+• USB hata ayıklama
+• Kablosuz hata ayıklama
+• Samsung telefonlarda Otomatik Engelleyici (One UI 6 ve sonrası)
+
+Nasıl çalışır
+• Seçtiğiniz aralıkta bakar: Saatte birden haftada bire dek.
+• Ayar açık kaldıkça hatırlatma her aralıkta yeniden gelir.
+• Ayarı kapatınca bildirim hemen kalkar.
+• Denetle düğmesi ayarlara o an bakar.
+• Bir satıra dokununca ayar açılır, Geliştirici seçenekleri'nde doğrudan o ayara gelinir.
+• Android uygulamaların Otomatik Engelleyici'nin durumunu okumasına izin vermez. Bu yüzden Samsung telefonlarda hata ayıklamayı kapatır kapatmaz Otomatik Engelleyici'yi yeniden açmanız için bir kez hatırlatılır.
+• Türkçe ve İngilizce, dil uygulamanın içinden seçilir.
+
+Yalnız okur
+• Ayar değiştirme izni, erişilebilirlik hizmeti, cihaz yöneticisi ve root yok.
+• İnternet izni yok: Telefonunuzdan hiçbir şey dışarı çıkmaz.
+• Yalnız iki izin: Bildirimler ve telefon yeniden başlayınca sonraki denetimi yeniden kurmak.
+• Reklam, analiz ve hesap yok.
+• Arka planda sürekli çalışan bir şey yok. Sistem uygulamayı denetim anında kısa bir süre uyandırır.
+
+Açık kaynak
+Watchdog, AGPL-3.0 lisanslı özgür bir yazılımdır. Kaynak kodu GitHub'da: github.com/SCgrS/Watchdog
+
+Watchdog'un Samsung'la bir bağı yoktur. Otomatik Engelleyici, Samsung'un One UI'ının bir özelliğidir.

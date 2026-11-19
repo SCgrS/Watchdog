@@ -1,0 +1,1 @@
+Açık kalan USB ve kablosuz hata ayıklamayı hatırlatır. Yalnız okur, değiştirmez.
