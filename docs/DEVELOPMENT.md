@@ -108,6 +108,11 @@ The app is published on Google Play as well as on GitHub. The package name `com.
 - **Testing before release:** The developer account is a personal account opened after 13 November 2023. Google Play
   makes such an account run a closed test with at least 12 testers who stay opted in for 14 days in a row before it can
   apply for production access.
+- **Open source, separate package** (the owner's decisions, 2026-11-19): The Play version has no update path to or
+  from the GitHub APK (different signatures, see above), but it is the same open source app: The description links to
+  this repository and the store contact's website is the repository. Play's automatic protection is off (Protected with
+  Google Play › Automatic protection), so Play adds no installer check code of its own and the delivered app runs the
+  same code as this repository.
 - **Words:** The listing does not claim that the app protects the phone (it only reminds), does not suggest installing
   apps from outside Play, and says that Watchdog is not affiliated with Samsung. The title is plain "Watchdog": Play
   allows several apps with the same title, and other apps called Watchdog already exist there.
