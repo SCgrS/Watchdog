@@ -24,6 +24,6 @@ Yalnız okur
 • Arka planda sürekli çalışan bir şey yok. Sistem uygulamayı denetim anında kısa bir süre uyandırır.
 
 Açık kaynak
-Watchdog, AGPL-3.0 lisanslı özgür bir yazılımdır. Kaynak kodu GitHub'da: github.com/SCgrS/Watchdog
+Watchdog, AGPL-3.0 lisanslı özgür bir yazılımdır. Kaynak kodu GitHub'da: https://github.com/SCgrS/Watchdog
 
 Watchdog'un Samsung'la bir bağı yoktur. Otomatik Engelleyici, Samsung'un One UI'ının bir özelliğidir.

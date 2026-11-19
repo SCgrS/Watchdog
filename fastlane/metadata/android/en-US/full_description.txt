@@ -24,6 +24,6 @@ Reads only
 • Nothing runs in the background all the time. The system wakes the app for a moment at check time.
 
 Open source
-Watchdog is free software under the AGPL-3.0 license. The source code is on GitHub: github.com/SCgrS/Watchdog
+Watchdog is free software under the AGPL-3.0 license. The source code is on GitHub: https://github.com/SCgrS/Watchdog
 
 Watchdog is not affiliated with Samsung. Auto Blocker is a feature of Samsung's One UI.
