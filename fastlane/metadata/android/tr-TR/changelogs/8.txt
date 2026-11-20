@@ -1,0 +1,1 @@
+Bilinmeyen uygulama yükleme izni açık kalan uygulamaları da hatırlatır. Yeni ana ekran: Açık, koyu ve sistemi izleyen tema, Hakkında bölümü.

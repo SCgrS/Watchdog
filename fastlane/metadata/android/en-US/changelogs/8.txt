@@ -1,0 +1,1 @@
+Also reminds you of apps still allowed to install unknown apps. New main screen with light, dark and system themes, and an About section.
