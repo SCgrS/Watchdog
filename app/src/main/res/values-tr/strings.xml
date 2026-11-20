@@ -19,16 +19,16 @@
     <string name="state_unknown">Bilinmiyor</string>
     <string name="state_absent">Yok</string>
     <!-- In Turkish the noun stays singular after a number: Both forms are the same. -->
-    <plurals name="summary_left_on">
-        <item quantity="one">%d ayar açık kaldı</item>
-        <item quantity="other">%d ayar açık kaldı</item>
+    <plurals name="summary_on">
+        <item quantity="one">%d ayar açık</item>
+        <item quantity="other">%d ayar açık</item>
     </plurals>
     <string name="summary_all_clear">Ayarlar yerinde</string>
     <string name="summary_one_on">%1$s açık</string>
     <!-- In Turkish the noun stays singular after a number, no plural form is needed. -->
     <string name="summary_many_on" tools:ignore="PluralsCandidate">%1$d ayar açık</string>
     <string name="summary_auto_blocker_off">Otomatik Engelleyici kapalı</string>
-    <string name="summary_nothing_on">Açık kalan ayar yok</string>
+    <string name="summary_nothing_on">Açık ayar yok</string>
     <string name="last_check">Son denetim: %1$s</string>
     <string name="check">Denetle</string>
     <string name="check_result">Denetlendi: %1$s</string>
@@ -49,7 +49,7 @@
 
     <!-- About -->
     <string name="about_title">Hakkında</string>
-    <string name="about_text">Watchdog bir antivirüs uygulaması değildir. Yalnızca resmî mağaza dışından uygulama yüklemek için açılan ayarların hâlâ açık olup olmadığını hatırlatır.\nAyarları açıp kapatma yetkisi yoktur ve internete bağlanmaz.\nDenetimi seçtiğiniz aralıklarla kendiliğinden, uygulamayı açtığınızda ve Denetle düğmesine bastığınızda yapar.</string>
+    <string name="about_text">Watchdog bir antivirüs uygulaması değildir. Yalnızca resmî mağaza dışından uygulama yüklemek için açılan ayarların hâlâ açık olup olmadığını hatırlatır.\nAyarları açma kapatma yetkisi yoktur ve internete bağlanmaz.\nDenetimi seçtiğiniz aralıklarla kendiliğinden, uygulamayı açtığınızda ve Denetle düğmesine bastığınızda yapar.</string>
     <string name="version_line">Sürüm: %1$s</string>
     <string name="developer_label">Geliştirici:</string>
 

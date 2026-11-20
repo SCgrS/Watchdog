@@ -14,7 +14,7 @@ easy to forget, and the phone stays unprotected for days. Watchdog checks these 
 turn the settings off yourself: The app cannot change any setting.
 
 <p align="center">
-  <img src="docs/screen-main.png" width="45%" alt="Main screen: 2 settings left on, USB debugging on, wireless debugging off, Install unknown apps on for one app, Auto Blocker explained, the Check button and Settings below">
+  <img src="docs/screen-main.png" width="45%" alt="Main screen: 2 settings on, USB debugging on, wireless debugging off, Install unknown apps on for one app, Auto Blocker explained, the Check button and Settings below">
   <img src="docs/screen-language.png" width="45%" alt="Language window over Settings: English selected with a green ring, Türkçe below, and Cancel">
 </p>
 
@@ -96,7 +96,7 @@ read, Auto Blocker being off is also reminded when the interval is over.
 
 ### Main screen
 
-The main screen puts the status first: A card that says how many settings are left on, when the last check was, one
+The main screen puts the status first: A card that says how many settings are on, when the last check was, one
 colored row per setting (amber left on, green off, blue for Samsung's Auto Blocker, which cannot be read) and the
 **Check** button. Below are Settings (check interval with the next check, language, theme) and About (what the app is
 and is not, its version and the developer). Every row that can be tapped has a chevron on the right. Tapping a setting's

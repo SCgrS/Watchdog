@@ -25,16 +25,16 @@
     <string name="state_unknown">Unknown</string>
     <string name="state_absent">Not available</string>
     <!-- The summary on top of the status card. -->
-    <plurals name="summary_left_on">
-        <item quantity="one">%d setting left on</item>
-        <item quantity="other">%d settings left on</item>
+    <plurals name="summary_on">
+        <item quantity="one">%d setting on</item>
+        <item quantity="other">%d settings on</item>
     </plurals>
     <string name="summary_all_clear">All clear</string>
     <string name="summary_one_on">%1$s on</string>
     <!-- Only shown when two or more settings are on, so the plural form is always right. -->
     <string name="summary_many_on" tools:ignore="PluralsCandidate">%1$d settings on</string>
     <string name="summary_auto_blocker_off">Auto Blocker is off</string>
-    <string name="summary_nothing_on">Nothing left on</string>
+    <string name="summary_nothing_on">No setting on</string>
     <!-- "Last check: Today 10:33". -->
     <string name="last_check">Last check: %1$s</string>
     <string name="check">Check</string>

@@ -59,7 +59,7 @@ In Git Bash, in the project folder:
   removing the app (its interval, language and battery setting would have to be set again).
 - For a release, the package is copied to `dist/` (ignored by Git) and attached to the GitHub release as `Watchdog.apk`.
   The README's download link points to `releases/latest/download/Watchdog.apk`, so the file name stays the same in every
-  release. The version is `versionName` (0.1.4) and `versionCode` (7) in `app/build.gradle.kts`. Every release raises
+  release. The version is `versionName` (0.1.5) and `versionCode` (8) in `app/build.gradle.kts`. Every release raises
   both: `versionCode` by one, `versionName` in its last digit. GitHub and Google Play share the numbers: Play accepts
   an upload only with a `versionCode` higher than every earlier upload.
 - Unit tests run only for the debug variant (`testDebugUnitTest`, the AGP 9 default).
@@ -293,7 +293,7 @@ How it is delivered depends on what started the check:
 - A notification is posted only if it can reach the user (notifications allowed and the channel `reminders` not turned
   off). The channel has high importance.
 - **Check message:** It names the setting that is on, or the number of settings on. While Auto Blocker cannot be read,
-  it says "Nothing left on" rather than "All clear".
+  it says "No setting on" rather than "All clear".
 
 ## Scheduling
 
@@ -360,10 +360,10 @@ dark). The status card is the main element of the screen.
 - From top to bottom: The logo and the app's name, the warnings (notifications off, battery restriction or pausing),
   the status card, the "Settings" section (check interval with the next check under it, language, theme) and "About"
   (what the app is and is not, the version and the developer's address as a link).
-- **Status card:** A summary on top (how many settings are left on, in amber, or "Nothing left on" in green, with the
-  time of the last check: "Last check: Today 10:33"), then one tinted tile per setting and the Check button in the
-  logo's vermilion. The card's border takes the summary's color. The summary never says "all clear": Auto Blocker cannot
-  be read on Samsung phones.
+- **Status card:** A summary on top (how many settings are on, "2 settings on" in amber, or "No setting on" in green,
+  with the time of the last check: "Last check: Today 10:33"), then one tinted tile per setting and the Check button in
+  the logo's vermilion. The card's border takes the summary's color. The summary never says "all clear": Auto Blocker
+  cannot be read on Samsung phones.
 - **Tiles:** The setting's icon on a square in the meaning's solid color, the name, the line under it (where the
   setting lives, the apps Install unknown apps is allowed for in amber, or Auto Blocker's note), the value and a
   chevron. Auto Blocker's tile is blue, has no value and explains that it cannot be checked. Screen readers read each

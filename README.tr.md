@@ -14,7 +14,7 @@ açık kalan varsa bildirimle hatırlatır. Bildirime dokununca uygulama açıl�
 hiçbir ayarı değiştiremez.
 
 <p align="center">
-  <img src="docs/screen-main-tr.png" width="45%" alt="Ana ekran: 2 ayar açık kaldı, USB hata ayıklama açık, kablosuz hata ayıklama kapalı, bilinmeyen uygulama yükleme izni bir uygulamada açık, Otomatik Engelleyici açıklaması, Denetle düğmesi ve altında Ayarlar">
+  <img src="docs/screen-main-tr.png" width="45%" alt="Ana ekran: 2 ayar açık, USB hata ayıklama açık, kablosuz hata ayıklama kapalı, bilinmeyen uygulama yükleme izni bir uygulamada açık, Otomatik Engelleyici açıklaması, Denetle düğmesi ve altında Ayarlar">
   <img src="docs/screen-language-tr.png" width="45%" alt="Ayarların üstünde dil penceresi: Türkçe yeşil halkayla seçili, üstünde English, altta Vazgeç">
 </p>
 
@@ -93,7 +93,7 @@ okunabilen telefonlarda kapalı Otomatik Engelleyici aralık dolunca ayrıca hat
 
 ### Ana ekran
 
-Ana ekranda önce durum gelir: Kaç ayarın açık kaldığını ve son denetimin ne zaman yapıldığını söyleyen bir kart, her
+Ana ekranda önce durum gelir: Kaç ayarın açık olduğunu ve son denetimin ne zaman yapıldığını söyleyen bir kart, her
 ayar için renkli bir satır (açık kalan turuncu, kapalı yeşil, durumu okunamayan Otomatik Engelleyici mavi) ve
 **Denetle** düğmesi. Altında Ayarlar (sonraki denetimle birlikte denetim aralığı, dil, tema) ve Hakkında (uygulamanın ne
 olduğu ve ne olmadığı, sürümü ve geliştiricisi) bölümleri vardır. Dokunulabilen her satırın sağında ok vardır. Bir

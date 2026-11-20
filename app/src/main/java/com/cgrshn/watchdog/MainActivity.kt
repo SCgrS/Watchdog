@@ -122,13 +122,13 @@ class MainActivity : Activity() {
     }
 
     /**
-     * The summary on top of the status card, in the color of what it says: How many settings are left on (amber), or that
-     * nothing is left on (green). It never says "all clear": Auto Blocker cannot be read on Samsung phones.
+     * The summary on top of the status card, in the color of what it says: How many settings are on ("2 settings on",
+     * amber), or "No setting on" (green). It never says "all clear": Auto Blocker cannot be read on Samsung phones.
      */
     private fun showSummary(snapshot: Snapshot) {
         val leftOn = listOf(snapshot.usb, snapshot.wireless, snapshot.unknownApps).count { it == State.ON }
         val (meaning, title) = when {
-            leftOn > 0 -> Meaning.RISK to resources.getQuantityString(R.plurals.summary_left_on, leftOn, leftOn)
+            leftOn > 0 -> Meaning.RISK to resources.getQuantityString(R.plurals.summary_on, leftOn, leftOn)
             snapshot.autoBlocker == State.OFF -> Meaning.RISK to getString(R.string.summary_auto_blocker_off)
             else -> Meaning.SAFE to getString(R.string.summary_nothing_on)
         }
