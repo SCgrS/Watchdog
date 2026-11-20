@@ -58,7 +58,7 @@ In Git Bash, in the project folder:
   removing the app (its interval, language and battery setting would have to be set again).
 - For a release, the package is copied to `dist/` (ignored by Git) and attached to the GitHub release as `Watchdog.apk`.
   The README's download link points to `releases/latest/download/Watchdog.apk`, so the file name stays the same in every
-  release. The version is `versionName` (0.1.1) and `versionCode` (4) in `app/build.gradle.kts`. Every release raises
+  release. The version is `versionName` (0.1.2) and `versionCode` (5) in `app/build.gradle.kts`. Every release raises
   both: `versionCode` by one, `versionName` in its last digit. GitHub and Google Play share the numbers: Play accepts
   an upload only with a `versionCode` higher than every earlier upload.
 - Unit tests run only for the debug variant (`testDebugUnitTest`, the AGP 9 default).
