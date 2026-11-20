@@ -14,7 +14,7 @@ object Checker {
         val now = System.currentTimeMillis()
         val effective = Decision.effectiveTrigger(trigger, store.nextCheck, now)
         when (snapshot.autoBlocker) {
-            State.UNKNOWN -> if (snapshot.debuggingOn) store.autoBlockerPending = true
+            State.UNKNOWN -> if (snapshot.leftOn) store.autoBlockerPending = true
             else -> store.autoBlockerPending = false
         }
         val outcome = Decision.decide(snapshot, Notifier.visibleType(app), effective, store.autoBlockerPending)

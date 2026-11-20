@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     English texts, the default language. Turkish ones are in values-tr. Setting names follow Samsung's English One UI
-    (Developer options, Auto Blocker).
+    (Developer options, Install unknown apps, Special access, Auto Blocker).
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- The app's name is the same in every language. -->
     <string name="app_name" translatable="false">Watchdog</string>
-    <string name="tagline">Reminds you of debugging settings left on</string>
+    <string name="tagline">Reminds you of risky settings left on</string>
 
     <!-- Status -->
     <string name="status_title">Status</string>
     <string name="usb_debugging">USB debugging</string>
     <string name="wireless_debugging">Wireless debugging</string>
+    <string name="unknown_apps">Install unknown apps</string>
+    <!-- A setting left on in the notification, with the apps it is allowed for: "Install unknown apps (Chrome)". -->
+    <string name="unknown_apps_for">%1$s (%2$s)</string>
     <string name="auto_blocker">Auto Blocker</string>
     <!-- Under the status rows: Where the setting lives on the phone. -->
     <string name="location_developer_options">Developer options</string>
+    <string name="location_special_access">Apps › Special access</string>
     <string name="location_security">Security and privacy</string>
     <string name="state_on">On</string>
     <string name="state_off">Off</string>
@@ -25,9 +29,9 @@
     <!-- Only shown when two or more settings are on, so the plural form is always right. -->
     <string name="summary_many_on" tools:ignore="PluralsCandidate">%1$d settings on</string>
     <string name="summary_auto_blocker_off">Auto Blocker off</string>
-    <string name="summary_debugging_off">Debugging off</string>
+    <string name="summary_nothing_on">Nothing left on</string>
     <string name="last_check">Last check %1$s</string>
-    <string name="auto_blocker_unknown_note">When you turn off debugging, you will be reminded to turn Auto Blocker on.</string>
+    <string name="auto_blocker_unknown_note">When you turn these settings off, you will be reminded to turn Auto Blocker on.</string>
 
     <!-- Checks -->
     <string name="check">Check</string>
@@ -56,15 +60,18 @@
 
     <!-- Notifications -->
     <string name="channel_name">Security reminders</string>
-    <string name="channel_description">Debugging settings left on and Auto Blocker turned off</string>
+    <string name="channel_description">Settings left on and Auto Blocker turned off</string>
     <string name="notification_usb_title">USB debugging is still on</string>
     <string name="notification_wireless_title">Wireless debugging is still on</string>
     <string name="notification_both_title">USB and wireless debugging are still on</string>
-    <string name="notification_debugging_text">Still on: %1$s.</string>
+    <string name="notification_unknown_apps_title">Installing unknown apps is still allowed</string>
+    <!-- Only shown when two or more settings are on, so the plural form is always right. -->
+    <string name="notification_many_title" tools:ignore="PluralsCandidate">%1$d settings are still on</string>
+    <string name="notification_left_on_text">Still on: %1$s.</string>
     <string name="notification_auto_blocker_too">Afterwards, turn Auto Blocker back on too.</string>
     <string name="notification_auto_blocker_off_title">Auto Blocker is off</string>
     <string name="notification_auto_blocker_off_text">Turn it back on to protect your phone. Tap to open its settings.</string>
     <string name="notification_auto_blocker_reminder_title">Turn on Auto Blocker now</string>
-    <string name="notification_auto_blocker_reminder_text">Debugging settings are off. Tap to turn Auto Blocker back on.</string>
+    <string name="notification_auto_blocker_reminder_text">The settings left on are off now. Tap to turn Auto Blocker back on.</string>
     <string name="notification_lock_screen_text">You have a reminder</string>
 </resources>

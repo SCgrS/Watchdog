@@ -11,9 +11,10 @@ import android.provider.Settings
 
 /**
  * The settings pages the app can open. The app only opens them and never touches the settings inside. USB and WIRELESS
- * open Developer options scrolled to that setting.
+ * open Developer options scrolled to that setting. UNKNOWN_APPS opens Install unknown apps. New pages go at the end: The
+ * position numbers the notifications' pending intents.
  */
-enum class Page { USB, WIRELESS, AUTO_BLOCKER, NOTIFICATIONS, BATTERY, PAUSE }
+enum class Page { USB, WIRELESS, AUTO_BLOCKER, NOTIFICATIONS, BATTERY, PAUSE, UNKNOWN_APPS }
 
 object SettingsPages {
     /** Keys of the settings in Developer options (the same in AOSP and Samsung's SecSettings, checked 2026-11-14). */
@@ -32,9 +33,12 @@ object SettingsPages {
     private const val AUTO_BLOCKER_SCREEN = "com.samsung.android.rampart.ui.MainSettingActivity"
     private const val AUTO_BLOCKER_ACTION = "com.samsung.android.rampart.action.MAIN_SETTING_ACTIVITY"
 
-    /** Opens the page. If the first candidate is missing, tries the next. Returns false if none opens. */
-    fun open(context: Context, page: Page): Boolean {
-        for (intent in candidates(context, page)) {
+    /**
+     * Opens the page. If the first candidate is missing, tries the next. Returns false if none opens. [app]: For
+     * UNKNOWN_APPS, the app whose switch opens directly. Without it, the list of apps opens.
+     */
+    fun open(context: Context, page: Page, app: String? = null): Boolean {
+        for (intent in candidates(context, page, app)) {
             try {
                 context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 return true
@@ -53,7 +57,7 @@ object SettingsPages {
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
-    private fun candidates(context: Context, page: Page): List<Intent> {
+    private fun candidates(context: Context, page: Page, app: String?): List<Intent> {
         val packageUri = Uri.fromParts("package", context.packageName, null)
         val appInfo = settings(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, packageUri))
         return when (page) {
@@ -79,12 +83,18 @@ object SettingsPages {
             ) + appInfo
             Page.BATTERY -> appInfo
             Page.PAUSE -> settings(Intent(Intent.ACTION_AUTO_REVOKE_PERMISSIONS, packageUri)) + appInfo
+            Page.UNKNOWN_APPS -> {
+                val list = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
+                val single = app?.let { listOf(Intent(list).setData(Uri.fromParts("package", it, null))) }.orEmpty()
+                single.flatMap(::settings) + settings(list) + settings(Intent(Settings.ACTION_SETTINGS))
+            }
         }
     }
 
     /**
      * The intent first addressed to the system Settings app, then as it is (for phones whose Settings app has another
-     * package name). The intents carry only the app's own package name and a settings key.
+     * package name). The intents carry only a package name (the app's own, or the app shown on the Install unknown apps
+     * row) and a settings key.
      */
     private fun settings(intent: Intent): List<Intent> = listOf(Intent(intent).setPackage(SETTINGS_PACKAGE), intent)
 

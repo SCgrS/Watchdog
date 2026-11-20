@@ -20,7 +20,7 @@ target SDK 37. The sources are in `app/src/main/java/com/cgrshn/watchdog`:
 | `ChoiceDialog.kt` | The app's own choice window for the language and the check interval |
 | `Checker.kt` | One check: Reads the settings, makes the decision, applies the notification and the schedule |
 | `Decision.kt` | All decision rules, independent of Android (`State`, `Snapshot`, `Trigger`, `ReminderType`, `Delivery`, `Outcome`) |
-| `SettingsReader.kt` | Reads the three watched settings |
+| `SettingsReader.kt` | Reads the watched settings: USB and wireless debugging, Auto Blocker and Install unknown apps |
 | `SettingsPages.kt` | Opens settings pages (`Page`, and `SettingsOpenerActivity` for notifications) |
 | `Notifier.kt` | The app's single notification and its channel |
 | `Scheduler.kt` | The check alarm and the content-triggered job |
@@ -119,8 +119,11 @@ The app is published on Google Play as well as on GitHub. The package name `com.
 
 ## Security setup
 
-- **Permissions:** Only `POST_NOTIFICATIONS` and `RECEIVE_BOOT_COMPLETED`. The manifest's `<queries>` entry for
-  `com.samsung.android.rampart` only lets the app see whether Auto Blocker exists on the phone. It is not a permission.
+- **Permissions:** Only `POST_NOTIFICATIONS` and `RECEIVE_BOOT_COMPLETED`. The manifest's `<queries>` entries are
+  package visibility, not permissions: The one for `com.samsung.android.rampart` lets the app see whether Auto Blocker
+  exists on the phone, the `MAIN`/`LAUNCHER` intent lets it see the apps with an icon in the app list, to check which of
+  them may install unknown apps (see Settings read). `QUERY_ALL_PACKAGES` is not used. The app list is only looked at
+  during a check, nothing about it is stored or leaves the phone.
 - **Manifest check:** The `manifestCheck<Variant>` task (`ManifestCheck` in `app/build.gradle.kts`) checks the merged
   manifest of every variant before `package<Variant>`, `package<Variant>Bundle` and `check`. The build stops if the
   permission list differs from the two above, if a component is guarded by a forbidden privilege (settings writing,
@@ -148,8 +151,8 @@ The app is published on Google Play as well as on GitHub. The package name `com.
 - **Auto Blocker and Settings intents:** Auto Blocker counts only when its package is a system app (`FLAG_SYSTEM`).
   Otherwise any sideloaded app could take the package name on a phone without Auto Blocker, and Watchdog would open its
   screen. Settings pages are first sent to the system Settings app by package (`com.android.settings`), then as plain
-  intents for phones whose Settings app has another package name. The intents carry only the app's package name and a
-  settings key.
+  intents for phones whose Settings app has another package name. The intents carry only a package name (the app's
+  own, or the one app shown on the Install unknown apps row) and a settings key.
 - **Data:** A few values in the private `SharedPreferences` file `store`: The check interval, the language, the last and
   the next check time, whether the notification permission was asked and the pending Auto Blocker reminder. Nothing is
   backed up to the cloud or moved to a new phone (`allowBackup="false"` and `res/xml/backup_rules.xml`). The manifest
@@ -175,6 +178,7 @@ The app is published on Google Play as well as on GitHub. The package name `com.
 | USB debugging | `Settings.Global` | `adb_enabled` |
 | Wireless debugging | `Settings.Global` | `adb_wifi_enabled` |
 | Auto Blocker (Samsung) | `Settings.Secure` | `rampart_main_switch_enabled` |
+| Install unknown apps | `AppOpsManager`, per app | `android:request_install_packages` |
 
 Developer options itself (`development_settings_enabled`) is not watched: Leaving it on is not a risk by itself. Watching
 it also kept the reminder up after debugging was turned off and held back the Auto Blocker reminder.
@@ -190,6 +194,27 @@ a hidden key that is not marked `@Readable` can throw a `SecurityException`. The
 decision logic below). A missing value is also read as `UNKNOWN` while the Auto Blocker package exists as a system
 app. If it does not exist (not a Samsung phone, or an older One UI) or is not a system app, the state is `ABSENT`: The
 row shows "Not available" and there is no Auto Blocker reminder. A debugging setting that cannot be read is `UNKNOWN` and never counts as on.
+
+**Install unknown apps:** Since Android 8 this is not one switch but a permission per app (Settings › Apps › Special
+access › Install unknown apps). An app that asks for `REQUEST_INSTALL_PACKAGES` may hand APK files to the installer only
+while the user allows it there. The permission is an app operation: `SettingsReader` takes the op name from
+`AppOpsManager.permissionToOp` and reads each app's mode with `checkOpNoThrow` (`unsafeCheckOpNoThrow` is deprecated in
+SDK 37). The setting counts as on when at least one app has `MODE_ALLOWED`, the mode the Settings switch sets. The apps
+are named on the screen and in the notification, sorted by name.
+
+- Only the apps the app can see are checked (package visibility since Android 11): The ones with an icon in the app
+  list, through the manifest's `MAIN`/`LAUNCHER` query. These are the apps people allow in practice (browsers, file
+  managers, messaging and mail apps). An app without such an icon is not seen.
+- Apps that hold `INSTALL_PACKAGES` are skipped: The phone's own stores and installers install without asking, so their
+  switch changes nothing and a reminder about them could never be cleared. Watchdog itself does not ask for the
+  permission.
+- If the installed apps cannot be listed, the state is `UNKNOWN` and never counts as on.
+- The setting has no settings address, so `SettingChangeJob` and the screen's `ContentObserver` do not see it change.
+  After it is turned off, the notification goes away when Watchdog's screen is opened again (coming back from the
+  Settings page is enough) or at the next check. Watching app operations of other apps would need `WATCH_APPOPS`, a
+  system permission.
+- The row opens the switch of the one app it is allowed for (`ACTION_MANAGE_UNKNOWN_APP_SOURCES` with a `package:` URI),
+  or the list when there are several or none.
 
 **Opening a setting scrolled into view:** When Developer options is opened with the `:settings:fragment_args_key` extra
 (also inside a `:settings:show_fragment_args` bundle), the Settings app scrolls the page to the setting with that key and
@@ -219,11 +244,14 @@ kept.
 
 The notification type, in order of priority:
 
-1. `DEBUGGING`: USB or wireless debugging is on. The title names the setting that is on, or both.
+1. `LEFT_ON`: USB or wireless debugging is on, or an app may install unknown apps. The title names the setting that is
+   on (both debugging settings together), or says how many are on when Install unknown apps is on with debugging. Called
+   `DEBUGGING` up to 0.1.1: `Notifier.visibleType` reads the old name from a notification posted before an update.
 2. `AUTO_BLOCKER_OFF`: Auto Blocker was read as off (on phones that let apps read it).
-3. `AUTO_BLOCKER_REMINDER`: Auto Blocker cannot be read, the debugging settings are off, and they were seen on before
-   (the debugging notification or the reminder is visible, or the pending flag is set). This is the one-time "Turn on
-   Auto Blocker now" reminder.
+3. `AUTO_BLOCKER_REMINDER`: Auto Blocker cannot be read, nothing is left on any more, and something was seen on before
+   (the left-on notification or the reminder is visible, or the pending flag is set). This is the one-time "Turn on Auto
+   Blocker now" reminder. Install unknown apps counts here too: On a Samsung phone an app from outside the Play Store
+   can be installed only while Auto Blocker is off.
 4. None: The notification is removed.
 
 How it is delivered depends on what started the check:
@@ -237,14 +265,15 @@ How it is delivered depends on what started the check:
 
 - When no type applies, the delivery is `REMOVE`. An Auto Blocker reminder that is already visible is left alone
   (`LEAVE`): It never sounds again. A new Auto Blocker reminder appears silently even on a `SOFT` trigger, as soon as the
-  debugging settings go off.
+  settings left on go off.
 - A check whose stored time has passed (also when it passed while the phone was off) is a full `ALARM` check, whatever
   started it (`Decision.effectiveTrigger`).
-- **Pending Auto Blocker reminder:** When a check sees a debugging setting on while Auto Blocker cannot be read, the
+- **Pending Auto Blocker reminder:** When a check sees a setting left on while Auto Blocker cannot be read, the
   `auto_blocker_pending` flag is stored. When the settings go off, the reminder appears silently even if the debugging
   notification was never seen, and the flag is cleared once the reminder is posted. It is also cleared as soon as Auto
   Blocker becomes readable. The reminder closes on tap (which opens Auto Blocker's page) or swipe.
-- **Notification text:** "Still on:" lists the settings that are on. If Auto Blocker exists and is not known to be on,
+- **Notification text:** "Still on:" lists the settings that are on. Install unknown apps carries the apps it is
+  allowed for: "Install unknown apps (Chrome and My Files)". If Auto Blocker exists and is not known to be on,
   the text adds "Afterwards, turn Auto Blocker back on too." and the notification gets an Auto Blocker button.
 - **Silent posting:** Android's own `Notification.Builder` has no `setSilent`. As AndroidX does it, the notification is
   put in a group (`com.cgrshn.watchdog.SILENT`) with `GROUP_ALERT_SUMMARY`. There is no group summary, so no sound or
@@ -252,7 +281,7 @@ How it is delivered depends on what started the check:
 - A notification is posted only if it can reach the user (notifications allowed and the channel `reminders` not turned
   off). The channel has high importance.
 - **Check message:** It names the setting that is on, or the number of settings on. While Auto Blocker cannot be read,
-  it says "Debugging off" rather than "All clear".
+  it says "Nothing left on" rather than "All clear".
 
 ## Scheduling
 
@@ -271,7 +300,7 @@ Nothing runs in the background all the time. The process lives only for a short 
   (`Decision.nextCheck`). The Check button works only on the app's own screen while it is not covered.
 - **Intervals:** Every hour, every 6 hours, every day, every 2 days, every 3 days and every week (the default). A stored
   value that is not on this list falls back to the default.
-- **Content-triggered job:** A one-time `JobScheduler` job bound to the addresses of the three watched settings (500 ms
+- **Content-triggered job:** A one-time `JobScheduler` job bound to the three settings' addresses (500 ms
   update delay, at most 3 s). When a setting changes, the system runs `SettingChangeJob`, and a new job is set up after
   it ends. This way the notification goes away as soon as the setting is turned off. If the waiting job watches other
   addresses (left over from an earlier version), it is set up again with the same ID. If the job cannot be set up, the
@@ -318,7 +347,9 @@ bright element of the screen.
   "Status" title with the time of the last check on its right, the status card, the Check button, the "Checks" section
   (check interval, next check) and the "App" section (language), and a line saying the app only reads settings.
 - Each status row has a lamp, the setting's name, where the setting lives on the phone under the name, and the value.
-  There is no big summary headline above the card: It would claim "all clear" while Auto Blocker is unknown.
+  While apps are allowed to install unknown apps, their names take the place of the location line, in the amber of a
+  setting left on. There is no big summary headline above the card: It would claim "all clear" while Auto Blocker is
+  unknown.
 - Every row that can be tapped has a chevron on the right (`ic_chevron`, `text_secondary`). "Next check" cannot be
   tapped and has none. Screen readers read each status row as name, value and location.
 - Since Android 15 the screen is drawn edge to edge. Scrolled content is cut below the status bar and the last row ends
@@ -379,6 +410,16 @@ What was checked:
 - The names in the battery and pausing warnings match the phone's Turkish One UI (Uygulama bilgileri › Pil ›
   Kısıtlanmamış, Kullanılmayan uygulamayı yönet). The English ones follow Samsung's English One UI.
 
-Not yet tested on the phone: The debugging notification turning into "Turn on Auto Blocker now" when the settings go
+- Install unknown apps (2026-11-20, with a test copy whose package name has the suffix `.deneme`, installed beside the
+  real app through a Gradle init script that sets `applicationIdSuffix` for the debug build): The app found the same two
+  allowed apps as `adb shell appops query-op REQUEST_INSTALL_PACKAGES allow` (My Files and WhatsApp), named on the row
+  and in the notification ("2 settings are still on", "Still on: USB debugging and Install unknown apps (Dosyalarım and
+  WhatsApp)") in both languages. The app names come from the phone, so they follow the phone's language. With several
+  apps the row opens the list (`Settings$ManageExternalSourcesActivity`). With one app it opens that app's switch
+  (`Settings$ManageAppExternalSourcesActivity`), tested with a temporary build that opened the first app. One UI 8 names
+  the place Apps › ⋮ › Special access (Uygulamalar › Özel erişim). The long Turkish name wraps to two lines on the row.
+
+Not yet tested on the phone: Turning Install unknown apps off and the notification going away (the phone's settings were
+not changed during the test). The debugging notification turning into "Turn on Auto Blocker now" when the settings go
 off, and the notification coming back after a restart. With Auto Blocker on, adb cannot be used for these, so they are
 checked in real use.

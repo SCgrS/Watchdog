@@ -9,28 +9,83 @@ class DecisionTest {
         usb: State = State.OFF,
         wireless: State = State.OFF,
         autoBlocker: State = State.UNKNOWN,
-    ) = Snapshot(usb, wireless, autoBlocker)
+        unknownApps: State = State.OFF,
+    ) = Snapshot(
+        usb,
+        wireless,
+        autoBlocker,
+        unknownApps,
+        installers = if (unknownApps == State.ON) listOf(Installer("com.example.browser", "Browser")) else emptyList(),
+    )
 
     private val usbOn = snapshot(usb = State.ON)
     private val allOff = snapshot()
+    private val installsAllowed = snapshot(unknownApps = State.ON)
+
+    @Test
+    fun appAllowedToInstallUnknownAppsAlertsAtIntervalEnd() {
+        val outcome = Decision.decide(installsAllowed, visible = null, trigger = Trigger.ALARM)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
+        assertEquals(Delivery.ALERT, outcome.delivery)
+    }
+
+    @Test
+    fun allowingAnAppToInstallRaisesNoNewAlert() {
+        val outcome = Decision.decide(installsAllowed, visible = null, trigger = Trigger.SOFT)
+        assertEquals(Delivery.UPDATE_SILENTLY, outcome.delivery)
+    }
+
+    @Test
+    fun unknownAppsKeepTheNotificationAfterDebuggingGoesOff() {
+        val outcome = Decision.decide(installsAllowed, visible = ReminderType.LEFT_ON, trigger = Trigger.SOFT)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
+        assertEquals(Delivery.UPDATE_SILENTLY, outcome.delivery)
+    }
+
+    @Test
+    fun unknownAppsTurnedOffBringsTheAutoBlockerReminder() {
+        val outcome = Decision.decide(allOff, visible = ReminderType.LEFT_ON, trigger = Trigger.SOFT)
+        assertEquals(ReminderType.AUTO_BLOCKER_REMINDER, outcome.type)
+        assertEquals(Delivery.SHOW_SILENTLY, outcome.delivery)
+    }
+
+    @Test
+    fun unknownAppsGoOffWithReadableAutoBlockerOnRemovesNotification() {
+        val outcome = Decision.decide(snapshot(autoBlocker = State.ON), visible = ReminderType.LEFT_ON, trigger = Trigger.SOFT)
+        assertEquals(Delivery.REMOVE, outcome.delivery)
+    }
+
+    @Test
+    fun unreadableUnknownAppsIsNotCountedAsOn() {
+        val outcome = Decision.decide(snapshot(unknownApps = State.UNKNOWN), visible = null, trigger = Trigger.ALARM)
+        assertNull(outcome.type)
+    }
+
+    @Test
+    fun leftOnCoversDebuggingAndUnknownApps() {
+        assertEquals(true, usbOn.leftOn)
+        assertEquals(true, installsAllowed.leftOn)
+        assertEquals(false, allOff.leftOn)
+        assertEquals(false, snapshot(unknownApps = State.UNKNOWN).leftOn)
+    }
 
     @Test
     fun intervalOverWithSettingOnAlerts() {
         val outcome = Decision.decide(usbOn, visible = null, trigger = Trigger.ALARM)
-        assertEquals(ReminderType.DEBUGGING, outcome.type)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
         assertEquals(Delivery.ALERT, outcome.delivery)
     }
 
     @Test
     fun intervalOverWithVisibleNotificationAlertsAgain() {
-        val outcome = Decision.decide(usbOn, visible = ReminderType.DEBUGGING, trigger = Trigger.ALARM)
+        val outcome = Decision.decide(usbOn, visible = ReminderType.LEFT_ON, trigger = Trigger.ALARM)
         assertEquals(Delivery.ALERT, outcome.delivery)
     }
 
     @Test
     fun wirelessDebuggingAloneAlerts() {
         val outcome = Decision.decide(snapshot(wireless = State.ON), visible = null, trigger = Trigger.ALARM)
-        assertEquals(ReminderType.DEBUGGING, outcome.type)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
     }
 
     @Test
@@ -48,7 +103,7 @@ class DecisionTest {
 
     @Test
     fun withUnreadableAutoBlockerNotificationTurnsIntoReminderWhenSettingsGoOff() {
-        val outcome = Decision.decide(allOff, visible = ReminderType.DEBUGGING, trigger = Trigger.SOFT)
+        val outcome = Decision.decide(allOff, visible = ReminderType.LEFT_ON, trigger = Trigger.SOFT)
         assertEquals(ReminderType.AUTO_BLOCKER_REMINDER, outcome.type)
         assertEquals(Delivery.SHOW_SILENTLY, outcome.delivery)
     }
@@ -69,13 +124,13 @@ class DecisionTest {
     @Test
     fun settingTurnedOnAgainWhileReminderIsVisible() {
         val outcome = Decision.decide(usbOn, visible = ReminderType.AUTO_BLOCKER_REMINDER, trigger = Trigger.SOFT)
-        assertEquals(ReminderType.DEBUGGING, outcome.type)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
         assertEquals(Delivery.UPDATE_SILENTLY, outcome.delivery)
     }
 
     @Test
     fun notificationGoesWhenSettingsOffAndReadableAutoBlockerOn() {
-        val outcome = Decision.decide(snapshot(autoBlocker = State.ON), visible = ReminderType.DEBUGGING, trigger = Trigger.SOFT)
+        val outcome = Decision.decide(snapshot(autoBlocker = State.ON), visible = ReminderType.LEFT_ON, trigger = Trigger.SOFT)
         assertNull(outcome.type)
         assertEquals(Delivery.REMOVE, outcome.delivery)
     }
@@ -95,7 +150,7 @@ class DecisionTest {
 
     @Test
     fun notificationGoesOnPhoneWithoutAutoBlocker() {
-        val outcome = Decision.decide(snapshot(autoBlocker = State.ABSENT), visible = ReminderType.DEBUGGING, trigger = Trigger.SOFT)
+        val outcome = Decision.decide(snapshot(autoBlocker = State.ABSENT), visible = ReminderType.LEFT_ON, trigger = Trigger.SOFT)
         assertEquals(Delivery.REMOVE, outcome.delivery)
     }
 
@@ -109,7 +164,7 @@ class DecisionTest {
     @Test
     fun pendingReminderWaitsWhileSettingsAreOn() {
         val outcome = Decision.decide(usbOn, visible = null, trigger = Trigger.SOFT, autoBlockerPending = true)
-        assertEquals(ReminderType.DEBUGGING, outcome.type)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
         assertEquals(Delivery.UPDATE_SILENTLY, outcome.delivery)
     }
 
@@ -122,7 +177,7 @@ class DecisionTest {
     @Test
     fun afterRestartNotificationComesBackSilently() {
         val outcome = Decision.decide(usbOn, visible = null, trigger = Trigger.BOOT)
-        assertEquals(ReminderType.DEBUGGING, outcome.type)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
         assertEquals(Delivery.SHOW_SILENTLY, outcome.delivery)
     }
 
@@ -161,13 +216,13 @@ class DecisionTest {
     @Test
     fun manualCheckShowsOnSettingSilently() {
         val outcome = Decision.decide(usbOn, visible = null, trigger = Trigger.MANUAL)
-        assertEquals(ReminderType.DEBUGGING, outcome.type)
+        assertEquals(ReminderType.LEFT_ON, outcome.type)
         assertEquals(Delivery.SHOW_SILENTLY, outcome.delivery)
     }
 
     @Test
     fun manualCheckRemovesNotificationWhenSettingsOff() {
-        val outcome = Decision.decide(snapshot(autoBlocker = State.ON), visible = ReminderType.DEBUGGING, trigger = Trigger.MANUAL)
+        val outcome = Decision.decide(snapshot(autoBlocker = State.ON), visible = ReminderType.LEFT_ON, trigger = Trigger.MANUAL)
         assertNull(outcome.type)
         assertEquals(Delivery.REMOVE, outcome.delivery)
     }

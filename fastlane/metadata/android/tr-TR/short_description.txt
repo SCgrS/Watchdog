@@ -1,1 +1,1 @@
-Açık kalan USB ve kablosuz hata ayıklamayı hatırlatır. Yalnız okur, değiştirmez.
+Açık kalan hata ayıklamayı ve bilinmeyen uygulama iznini hatırlatır.

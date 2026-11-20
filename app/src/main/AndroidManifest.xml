@@ -9,9 +9,17 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <!-- To see whether Samsung's Auto Blocker exists on this phone. This is not a permission. -->
+    <!--
+        Package visibility, not permissions. The package entry shows whether Samsung's Auto Blocker exists on this phone.
+        The intent entry shows the apps with an icon in the app list, so the app can see which of them are allowed to
+        install unknown apps (SettingsReader). Nothing about them is stored or leaves the phone.
+    -->
     <queries>
         <package android:name="com.samsung.android.rampart" />
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
     </queries>
 
     <application

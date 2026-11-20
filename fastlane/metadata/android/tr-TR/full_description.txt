@@ -1,19 +1,20 @@
-Watchdog, açık unuttuğunuz hata ayıklama ayarlarını ve Samsung telefonlarda kapattığınız Otomatik Engelleyici'yi hatırlatır.
+Watchdog, açık unuttuğunuz hata ayıklama ayarlarını ve uygulama yükleme izinlerini, Samsung telefonlarda kapattığınız Otomatik Engelleyici'yi hatırlatır.
 
-Bir iş için USB hata ayıklamayı ya da kablosuz hata ayıklamayı açmak bir anlık iştir. İş bitince kapatmak çoğu zaman unutulur ve telefon günlerce açık kalır. Watchdog seçtiğiniz aralıkta (varsayılan haftada bir) bu ayarlara bakar, açık kalan varsa bildirimle hatırlatır. Bildirime dokununca uygulama açılır, bir ayara dokununca Ayarlar'daki sayfası açılır. Ayarı kapatmayı siz yaparsınız: Watchdog hiçbir ayarı değiştiremez.
+Bir iş için USB hata ayıklamayı ya da kablosuz hata ayıklamayı açmak, bir uygulamaya bilinmeyen uygulama yükleme izni vermek bir anlık iştir. İş bitince kapatmak çoğu zaman unutulur ve telefon günlerce açık kalır. Watchdog seçtiğiniz aralıkta (varsayılan haftada bir) bu ayarlara bakar, açık kalan varsa bildirimle hatırlatır. Bildirime dokununca uygulama açılır, bir ayara dokununca Ayarlar'daki sayfası açılır. Ayarı kapatmayı siz yaparsınız: Watchdog hiçbir ayarı değiştiremez.
 
 Neye bakar
 • USB hata ayıklama
 • Kablosuz hata ayıklama
+• Bilinmeyen uygulamaları yükle: İzni hâlâ açık olan uygulamalar, adlarıyla
 • Samsung telefonlarda Otomatik Engelleyici (One UI 6 ve sonrası)
 
 Nasıl çalışır
 • Seçtiğiniz aralıkta bakar: Saatte birden haftada bire dek.
 • Ayar açık kaldıkça hatırlatma her aralıkta yeniden gelir.
-• Ayarı kapatınca bildirim hemen kalkar.
+• Ayarı kapatınca bildirim hemen kalkar (bilinmeyen uygulama izninde Watchdog'a dönünce).
 • Denetle düğmesi ayarlara o an bakar.
 • Bir satıra dokununca ayar açılır, Geliştirici seçenekleri'nde doğrudan o ayara gelinir.
-• Android uygulamaların Otomatik Engelleyici'nin durumunu okumasına izin vermez. Bu yüzden Samsung telefonlarda hata ayıklamayı kapatır kapatmaz Otomatik Engelleyici'yi yeniden açmanız için bir kez hatırlatılır.
+• Android uygulamaların Otomatik Engelleyici'nin durumunu okumasına izin vermez. Bu yüzden Samsung telefonlarda ayarları kapatır kapatmaz Otomatik Engelleyici'yi yeniden açmanız için bir kez hatırlatılır.
 • Türkçe ve İngilizce, dil uygulamanın içinden seçilir.
 
 Yalnız okur

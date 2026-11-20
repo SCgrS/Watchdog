@@ -2,11 +2,11 @@
 
 [Türkçe](#watchdog-gizlilik-politikası)
 
-Effective date: 19 November 2026
+Effective date: 20 November 2026
 
-Watchdog is an Android app that reminds you of USB debugging and wireless debugging left on, and of Samsung's Auto
-Blocker turned off. It is developed by SCgrS (github.com/SCgrS). This policy covers the app as published on Google Play
-and on GitHub.
+Watchdog is an Android app that reminds you of USB debugging, wireless debugging and the permission to install unknown
+apps left on, and of Samsung's Auto Blocker turned off. It is developed by SCgrS (github.com/SCgrS). This policy covers
+the app as published on Google Play and on GitHub.
 
 ## Summary
 
@@ -17,8 +17,13 @@ off your phone.
 
 To decide whether to remind you, the app reads three system settings on your phone: USB debugging, wireless debugging
 and, on Samsung phones, Auto Blocker. It also checks whether Samsung's Auto Blocker app exists on the phone and whether
-the app itself may be put to sleep by battery settings. These values are used on the phone at the moment of the check
-and are not recorded or sent anywhere.
+the app itself may be put to sleep by battery settings.
+
+To remind you of the permission to install unknown apps, the app looks at the apps on your phone that have an icon in
+the app list and checks which of them are allowed to install unknown apps. The names of those apps are shown on the
+app's screen and in its notification.
+
+These values are used on the phone at the moment of the check and are not recorded or sent anywhere.
 
 ## What the app stores
 
@@ -62,11 +67,11 @@ Questions about privacy: github.com/SCgrS/Watchdog/issues or x.com/CgrShn
 
 [English](#watchdog-privacy-policy)
 
-Yürürlük tarihi: 19 Kasım 2026
+Yürürlük tarihi: 20 Kasım 2026
 
-Watchdog, açık kalan USB hata ayıklamayı ve kablosuz hata ayıklamayı, Samsung telefonlarda kapatılan Otomatik
-Engelleyici'yi hatırlatan bir Android uygulamasıdır. Geliştiricisi SCgrS'dir (github.com/SCgrS). Bu politika
-uygulamanın Google Play'deki ve GitHub'daki sürümlerini kapsar.
+Watchdog, açık kalan USB hata ayıklamayı, kablosuz hata ayıklamayı ve bilinmeyen uygulama yükleme iznini, Samsung
+telefonlarda kapatılan Otomatik Engelleyici'yi hatırlatan bir Android uygulamasıdır. Geliştiricisi SCgrS'dir
+(github.com/SCgrS). Bu politika uygulamanın Google Play'deki ve GitHub'daki sürümlerini kapsar.
 
 ## Özet
 
@@ -77,8 +82,13 @@ Watchdog hiçbir kişisel veri toplamaz, paylaşmaz ve satmaz. İnternet izni yo
 
 Uygulama, hatırlatma yapıp yapmayacağına karar vermek için telefondaki üç sistem ayarını okur: USB hata ayıklama,
 kablosuz hata ayıklama ve Samsung telefonlarda Otomatik Engelleyici. Ayrıca Samsung'un Otomatik Engelleyici
-uygulamasının telefonda olup olmadığına ve pil ayarlarının uygulamayı uyutup uyutamayacağına bakar. Bu değerler denetim
-anında telefonda kullanılır, kaydedilmez ve hiçbir yere gönderilmez.
+uygulamasının telefonda olup olmadığına ve pil ayarlarının uygulamayı uyutup uyutamayacağına bakar.
+
+Bilinmeyen uygulama yükleme iznini hatırlatmak için telefondaki uygulamalardan uygulama listesinde simgesi olanlara
+bakar ve hangilerinin bilinmeyen uygulama yükleyebildiğini denetler. Bu uygulamaların adları uygulamanın ekranında ve
+bildiriminde gösterilir.
+
+Bu değerler denetim anında telefonda kullanılır, kaydedilmez ve hiçbir yere gönderilmez.
 
 ## Uygulamanın sakladıkları
 

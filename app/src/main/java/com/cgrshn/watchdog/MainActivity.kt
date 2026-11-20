@@ -39,6 +39,7 @@ class MainActivity : Activity() {
 
     private var lastSnapshot: Snapshot? = null
     private val rows = mutableMapOf<String, View>()
+    private val locations = mutableMapOf<String, Int>()
 
     /** The screen opens in the app's chosen language, independent of the phone's language. */
     override fun attachBaseContext(newBase: Context) {
@@ -99,6 +100,7 @@ class MainActivity : Activity() {
         showWarnings()
         showStatusRow(ROW_USB, snapshot.usb, onIsRisky = true)
         showStatusRow(ROW_WIRELESS, snapshot.wireless, onIsRisky = true)
+        showStatusRow(ROW_UNKNOWN_APPS, snapshot.unknownApps, onIsRisky = true, apps = snapshot.installers.map { it.label })
         showStatusRow(ROW_AUTO_BLOCKER, snapshot.autoBlocker, onIsRisky = false)
         find<View>(R.id.auto_blocker_note).visibility =
             if (snapshot.autoBlocker == State.UNKNOWN) View.VISIBLE else View.GONE
@@ -111,19 +113,21 @@ class MainActivity : Activity() {
     }
 
     /**
-     * The result message of Check. While Auto Blocker cannot be read, it does not say "All clear", it speaks only about
-     * debugging (a big "all clear" was misleading while the other settings were unknown).
+     * The result message of Check. While Auto Blocker cannot be read, it does not say "All clear", it says only that
+     * nothing is left on (a big "all clear" was misleading while the other settings were unknown).
      */
     private fun summary(snapshot: Snapshot): String {
         val onSettings = buildList {
             if (snapshot.usb == State.ON) add(getString(R.string.usb_debugging))
             if (snapshot.wireless == State.ON) add(getString(R.string.wireless_debugging))
+            if (snapshot.unknownApps == State.ON) add(getString(R.string.unknown_apps))
         }
         return when {
             onSettings.size == 1 -> getString(R.string.summary_one_on, onSettings[0])
             onSettings.size > 1 -> getString(R.string.summary_many_on, onSettings.size)
             snapshot.autoBlocker == State.OFF -> getString(R.string.summary_auto_blocker_off)
-            snapshot.autoBlocker == State.UNKNOWN -> getString(R.string.summary_debugging_off)
+            snapshot.autoBlocker == State.UNKNOWN || snapshot.unknownApps == State.UNKNOWN ->
+                getString(R.string.summary_nothing_on)
             else -> getString(R.string.summary_all_clear)
         }
     }
@@ -131,10 +135,12 @@ class MainActivity : Activity() {
     private fun buildStatusRows() {
         val container = find<LinearLayout>(R.id.status_rows)
         // Tapping a row opens that setting. For USB and wireless debugging, Developer options scrolls to the setting. The
-        // line under the name tells where the setting lives on the phone.
+        // line under the name tells where the setting lives on the phone. Install unknown apps opens the switch of the
+        // app it is allowed for, or the list when there are several.
         val rowInfos = listOf(
             RowInfo(ROW_USB, R.string.usb_debugging, R.string.location_developer_options, Page.USB),
             RowInfo(ROW_WIRELESS, R.string.wireless_debugging, R.string.location_developer_options, Page.WIRELESS),
+            RowInfo(ROW_UNKNOWN_APPS, R.string.unknown_apps, R.string.location_special_access, Page.UNKNOWN_APPS),
             RowInfo(ROW_AUTO_BLOCKER, R.string.auto_blocker, R.string.location_security, Page.AUTO_BLOCKER),
         )
         val inflater = LayoutInflater.from(this)
@@ -143,14 +149,21 @@ class MainActivity : Activity() {
             val row = inflater.inflate(R.layout.row_status, container, false)
             row.findViewById<TextView>(R.id.name).setText(info.name)
             row.findViewById<TextView>(R.id.location).setText(info.location)
-            row.setOnClickListener { SettingsPages.open(this, info.page) }
+            row.setOnClickListener {
+                val single = lastSnapshot?.installers?.singleOrNull()?.packageName
+                SettingsPages.open(this, info.page, app = if (info.page == Page.UNKNOWN_APPS) single else null)
+            }
             container.addView(row)
             rows[info.key] = row
+            locations[info.key] = info.location
         }
     }
 
-    /** [onIsRisky]: For debugging settings being on is the risk, for Auto Blocker being off. */
-    private fun showStatusRow(key: String, state: State, onIsRisky: Boolean) {
+    /**
+     * [onIsRisky]: For debugging settings and Install unknown apps being on is the risk, for Auto Blocker being off.
+     * [apps]: The apps Install unknown apps is allowed for. While there are any, they take the place of the location line.
+     */
+    private fun showStatusRow(key: String, state: State, onIsRisky: Boolean, apps: List<String> = emptyList()) {
         val row = rows[key] ?: return
         val risky = (state == State.ON && onIsRisky) || (state == State.OFF && !onIsRisky)
         val text = when (state) {
@@ -168,14 +181,23 @@ class MainActivity : Activity() {
         value.setText(text)
         value.setTextColor(getColor(if (risky) R.color.text_risk else R.color.text_secondary))
         row.findViewById<View>(R.id.lamp).backgroundTintList = ColorStateList.valueOf(getColor(lamp))
-        // Screen readers read the name, the value and where the setting lives on the phone.
-        val location = row.findViewById<TextView>(R.id.location).text
+        val locationView = row.findViewById<TextView>(R.id.location)
+        if (apps.isEmpty()) {
+            locationView.setText(locations.getValue(key))
+            locationView.setTextColor(getColor(R.color.text_muted))
+        } else {
+            locationView.text = Format.list(apps, store.language)
+            locationView.setTextColor(getColor(R.color.text_risk))
+        }
+        // Screen readers read the name, the value and where the setting lives on the phone (or the apps it is on for).
+        val location = locationView.text
         row.contentDescription = getString(rowName(key)) + ", " + getString(text) + ", " + location
     }
 
     private fun rowName(key: String) = when (key) {
         ROW_USB -> R.string.usb_debugging
         ROW_WIRELESS -> R.string.wireless_debugging
+        ROW_UNKNOWN_APPS -> R.string.unknown_apps
         else -> R.string.auto_blocker
     }
 
@@ -285,6 +307,7 @@ class MainActivity : Activity() {
         const val CHANGE_DELAY_MS = 500L
         const val ROW_USB = "usb"
         const val ROW_WIRELESS = "wireless"
+        const val ROW_UNKNOWN_APPS = "unknown_apps"
         const val ROW_AUTO_BLOCKER = "auto_blocker"
     }
 }

@@ -12,18 +12,30 @@ enum class State {
     ABSENT,
 }
 
+/** An app that is allowed to install other apps (Install unknown apps). */
+data class Installer(val packageName: String, val label: String)
+
 /**
  * A snapshot of the watched settings. Developer options itself is not watched: Leaving it on is not a risk by itself, the
  * reminder is about the debugging settings.
+ *
+ * [unknownApps] is ON when at least one app may install unknown apps. Those apps are [installers], in the order the
+ * screen and the notification name them.
  */
 data class Snapshot(
     val usb: State,
     val wireless: State,
     val autoBlocker: State,
+    val unknownApps: State = State.OFF,
+    val installers: List<Installer> = emptyList(),
 ) {
     /** USB or wireless debugging is on. */
     val debuggingOn: Boolean
         get() = usb == State.ON || wireless == State.ON
+
+    /** A setting that should be turned off again is on: Debugging, or an app that may install unknown apps. */
+    val leftOn: Boolean
+        get() = debuggingOn || unknownApps == State.ON
 }
 
 /** What started a check. */
@@ -49,15 +61,18 @@ enum class Trigger {
 
 /** The content of the app's single notification. */
 enum class ReminderType {
-    /** USB or wireless debugging is on. */
-    DEBUGGING,
+    /**
+     * A setting that should be turned off again is on: USB or wireless debugging, or Install unknown apps for an app.
+     * Called DEBUGGING in earlier versions (see [Notifier.visibleType]).
+     */
+    LEFT_ON,
 
     /** Auto Blocker was read as off (on phones that let apps read it). */
     AUTO_BLOCKER_OFF,
 
     /**
-     * Debugging settings that were seen on are now off, and Auto Blocker cannot be read: A one-time "Turn on Auto Blocker
-     * now" reminder. It appears silently as soon as the settings go off, closes on tap or swipe and never sounds again.
+     * Settings that were seen on are now off, and Auto Blocker cannot be read: A one-time "Turn on Auto Blocker now"
+     * reminder. It appears silently as soon as the settings go off, closes on tap or swipe and never sounds again.
      */
     AUTO_BLOCKER_REMINDER,
 }
@@ -84,21 +99,22 @@ data class Outcome(val type: ReminderType?, val delivery: Delivery)
 /**
  * All of the app's decision logic. It does not depend on Android and is covered by unit tests.
  *
- * The app checks at the chosen interval. If debugging settings are on, it shows a notification, which goes away when they
- * are turned off. No new alert appears while the user changes settings or opens the app.
+ * The app checks at the chosen interval. If a setting is left on, it shows a notification, which goes away when it is
+ * turned off. No new alert appears while the user changes settings or opens the app.
  */
 object Decision {
     /**
-     * [autoBlockerPending]: Debugging settings were seen on while Auto Blocker could not be read. When the settings go
-     * off, Auto Blocker is reminded once.
+     * [autoBlockerPending]: A setting was seen left on while Auto Blocker could not be read. When the settings go off,
+     * Auto Blocker is reminded once. Sideloading an app also needs Auto Blocker off, so the same holds for Install unknown
+     * apps.
      */
     fun decide(snapshot: Snapshot, visible: ReminderType?, trigger: Trigger, autoBlockerPending: Boolean = false): Outcome {
         val type = when {
-            snapshot.debuggingOn -> ReminderType.DEBUGGING
+            snapshot.leftOn -> ReminderType.LEFT_ON
             snapshot.autoBlocker == State.OFF -> ReminderType.AUTO_BLOCKER_OFF
             snapshot.autoBlocker == State.UNKNOWN && (
                 autoBlockerPending ||
-                    visible == ReminderType.DEBUGGING ||
+                    visible == ReminderType.LEFT_ON ||
                     visible == ReminderType.AUTO_BLOCKER_REMINDER
                 ) -> ReminderType.AUTO_BLOCKER_REMINDER
             else -> null

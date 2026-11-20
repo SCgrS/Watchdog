@@ -1,1 +1,1 @@
-Reminds you of USB and wireless debugging left on. Reads only, changes nothing.
+Reminds you of debugging and unknown app installs left on. Changes nothing.

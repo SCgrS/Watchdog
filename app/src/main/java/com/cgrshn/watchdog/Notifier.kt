@@ -18,6 +18,7 @@ object Notifier {
     private const val ID = 1
     private const val TYPE = "com.cgrshn.watchdog.TYPE"
     private const val SILENT_GROUP = "com.cgrshn.watchdog.SILENT"
+    private const val LEGACY_LEFT_ON = "DEBUGGING"
 
     /** Request code of the pending intent that opens the app (the settings pages start at 100). */
     private const val OPEN_APP_REQUEST = 1
@@ -41,10 +42,14 @@ object Notifier {
         return channel.importance != NotificationManager.IMPORTANCE_NONE
     }
 
-    /** Type of the notification visible right now, or null if none. */
+    /**
+     * Type of the notification visible right now, or null if none. Earlier versions called the left-on type DEBUGGING. A
+     * notification they posted is still visible after an update, so the old name is read as [ReminderType.LEFT_ON].
+     */
     fun visibleType(context: Context): ReminderType? {
         val visible = manager(context).activeNotifications.firstOrNull { it.id == ID } ?: return null
         val name = visible.notification.extras.getString(TYPE)
+        if (name == LEGACY_LEFT_ON) return ReminderType.LEFT_ON
         return ReminderType.entries.firstOrNull { it.name == name }
     }
 
@@ -85,26 +90,28 @@ object Notifier {
     private fun build(context: Context, snapshot: Snapshot, type: ReminderType, silent: Boolean): Notification {
         val builder = base(context, type, silent)
         when (type) {
-            ReminderType.DEBUGGING -> {
-                val onSettings = buildList {
-                    if (snapshot.usb == State.ON) add(context.getString(R.string.usb_debugging))
-                    if (snapshot.wireless == State.ON) add(context.getString(R.string.wireless_debugging))
-                }
+            ReminderType.LEFT_ON -> {
+                val onSettings = leftOnNames(context, snapshot)
                 // The title names the setting that is on. A tap opens the app, not the settings page (user request,
-                // 2026-11-15: going straight to USB debugging makes one forget Auto Blocker). The screen shows debugging
-                // and Auto Blocker together.
+                // 2026-11-15: going straight to USB debugging makes one forget Auto Blocker). The screen shows the
+                // settings and Auto Blocker together.
+                val usb = snapshot.usb == State.ON
+                val wireless = snapshot.wireless == State.ON
+                val unknownApps = snapshot.unknownApps == State.ON
                 val title = when {
-                    snapshot.usb == State.ON && snapshot.wireless == State.ON -> R.string.notification_both_title
-                    snapshot.usb == State.ON -> R.string.notification_usb_title
-                    else -> R.string.notification_wireless_title
+                    unknownApps && (usb || wireless) -> context.getString(R.string.notification_many_title, onSettings.size)
+                    usb && wireless -> context.getString(R.string.notification_both_title)
+                    usb -> context.getString(R.string.notification_usb_title)
+                    wireless -> context.getString(R.string.notification_wireless_title)
+                    else -> context.getString(R.string.notification_unknown_apps_title)
                 }
                 val autoBlockerToo = snapshot.autoBlocker != State.ABSENT && snapshot.autoBlocker != State.ON
                 var text = context.getString(
-                    R.string.notification_debugging_text,
+                    R.string.notification_left_on_text,
                     Format.list(onSettings, Store(context).language),
                 )
                 if (autoBlockerToo) text += " " + context.getString(R.string.notification_auto_blocker_too)
-                builder.setContentTitle(context.getString(title))
+                builder.setContentTitle(title)
                     .setContentText(text)
                     .setStyle(Notification.BigTextStyle().bigText(text))
                     .setContentIntent(openAppIntent(context))
@@ -137,6 +144,24 @@ object Notifier {
             }
         }
         return builder.build()
+    }
+
+    /**
+     * Names of the settings left on, in the order of the screen. Install unknown apps carries the apps it is allowed for:
+     * "Install unknown apps (Chrome and My Files)".
+     */
+    fun leftOnNames(context: Context, snapshot: Snapshot): List<String> = buildList {
+        if (snapshot.usb == State.ON) add(context.getString(R.string.usb_debugging))
+        if (snapshot.wireless == State.ON) add(context.getString(R.string.wireless_debugging))
+        if (snapshot.unknownApps == State.ON) {
+            add(
+                context.getString(
+                    R.string.unknown_apps_for,
+                    context.getString(R.string.unknown_apps),
+                    Format.list(snapshot.installers.map { it.label }, Store(context).language),
+                ),
+            )
+        }
     }
 
     /**

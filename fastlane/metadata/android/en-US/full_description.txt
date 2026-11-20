@@ -1,19 +1,20 @@
-Watchdog reminds you of debugging settings you left on, and of Samsung's Auto Blocker you turned off.
+Watchdog reminds you of debugging settings and app install permissions you left on, and of Samsung's Auto Blocker you turned off.
 
-Turning on USB debugging or wireless debugging for a task takes a moment. Turning it off afterwards is easy to forget, and the phone stays open for days. Watchdog checks these settings at the interval you choose (weekly by default) and reminds you with a notification while one is still on. Tapping the notification opens the app, and tapping a setting opens its page in Settings. You turn the setting off yourself: Watchdog cannot change any setting.
+Turning on USB debugging or wireless debugging, or allowing an app to install unknown apps, takes a moment. Turning it off afterwards is easy to forget, and the phone stays open for days. Watchdog checks these settings at the interval you choose (weekly by default) and reminds you with a notification while one is still on. Tapping the notification opens the app, and tapping a setting opens its page in Settings. You turn the setting off yourself: Watchdog cannot change any setting.
 
 What it watches
 • USB debugging
 • Wireless debugging
+• Install unknown apps: The apps that are still allowed, by name
 • Auto Blocker on Samsung phones (One UI 6 and later)
 
 How it works
 • Checks at the interval you choose, from every hour to every week.
 • While a setting is on, the reminder comes back at every interval.
-• The notification goes away as soon as you turn the setting off.
+• The notification goes away as soon as you turn the setting off (for Install unknown apps, when you come back to Watchdog).
 • The Check button looks at the settings right away.
 • Tapping a row opens the setting, scrolled into view in Developer options.
-• Android does not let apps read Auto Blocker's status. So on Samsung phones, as soon as you turn debugging off, a one-time reminder asks you to turn Auto Blocker back on.
+• Android does not let apps read Auto Blocker's status. So on Samsung phones, as soon as you turn the settings off, a one-time reminder asks you to turn Auto Blocker back on.
 • English and Turkish, chosen in the app.
 
 Reads only
