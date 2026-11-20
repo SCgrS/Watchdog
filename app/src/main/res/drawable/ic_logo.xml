@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The app's logo in the header: The launcher icon's visible 72 dp (of the 108 dp layer), on a rounded square in the
+    icon's own vermilion. The symbol is the same as in ic_launcher_foreground.xml.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp" android:height="44dp" android:viewportWidth="72" android:viewportHeight="72">
+    <path android:fillColor="@color/icon_background"
+        android:pathData="M18,0H54A18,18 0 0,1 72,18V54A18,18 0 0,1 54,72H18A18,18 0 0,1 0,54V18A18,18 0 0,1 18,0Z" />
+    <group android:translateX="-18" android:translateY="-18">
+        <path android:fillColor="#FFFFFFFF" android:fillType="evenOdd"
+            android:pathData="M44,28H64A3,3 0 0,1 67,31V44H41V31A3,3 0 0,1 44,28Z M45,33H51V37H45Z M57,33H63V37H57Z" />
+        <path android:fillColor="#FFFFFFFF"
+            android:pathData="M38,48H70A6,6 0 0,1 76,54V60C76,71 67,78 54,82C41,78 32,71 32,60V54A6,6 0 0,1 38,48Z" />
+    </group>
+</vector>

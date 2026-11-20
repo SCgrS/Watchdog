@@ -116,15 +116,6 @@ object Notifier {
                     .setStyle(Notification.BigTextStyle().bigText(text))
                     .setContentIntent(openAppIntent(context))
                     .setAutoCancel(false)
-                if (autoBlockerToo) {
-                    builder.addAction(
-                        Notification.Action.Builder(
-                            Icon.createWithResource(context, R.drawable.ic_notification),
-                            context.getString(R.string.auto_blocker),
-                            SettingsPages.pendingIntent(context, Page.AUTO_BLOCKER),
-                        ).setAuthenticationRequired(true).build(),
-                    )
-                }
             }
             ReminderType.AUTO_BLOCKER_OFF -> {
                 val text = context.getString(R.string.notification_auto_blocker_off_text)
@@ -180,8 +171,8 @@ object Notifier {
      * The notification is marked private (VISIBILITY_PRIVATE) with a public version without content. When the phone is set
      * to hide sensitive content on the lock screen, someone who picks up the locked phone sees only "You have a reminder"
      * and cannot read which setting is on. When the phone is set to show all content, Android shows the full text: An app
-     * cannot override this (a channel's lock screen visibility is reset by the system on Android 16). The action button
-     * does not work before unlocking.
+     * cannot override this (a channel's lock screen visibility is reset by the system on Android 16). The app's screen,
+     * which the button opens, appears only after unlocking.
      */
     private fun base(context: Context, type: ReminderType, silent: Boolean): Notification.Builder {
         val lockScreen = Notification.Builder(context, CHANNEL)
@@ -199,6 +190,15 @@ object Notifier {
             .setShowWhen(true)
             .setOnlyAlertOnce(silent)
             .addExtras(Bundle().apply { putString(TYPE, type.name) })
+            // Every notification has one button, Show details, which opens the app. It replaced an Auto Blocker button
+            // (the owner's request, 2026-11-20): The same button on every phone, the Samsung setting is on the screen.
+            .addAction(
+                Notification.Action.Builder(
+                    Icon.createWithResource(context, R.drawable.ic_notification),
+                    context.getString(R.string.notification_details),
+                    openAppIntent(context),
+                ).build(),
+            )
             .also { builder ->
                 // Silent posting: Like AndroidX's setSilent, the notification is put in a group and only the group summary
                 // alerts. Since there is no summary, the notification appears without sound or vibration.

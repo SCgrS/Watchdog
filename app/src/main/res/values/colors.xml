@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Graphite neutral ramp: Surfaces and text stay colorless, color appears only in the status lamps (an instrument panel
-    on a night shift). The app comes only with a dark theme.
+    Light theme colors. The dark ones are in values-night. Surfaces and text stay neutral, color carries meaning: Amber is
+    a setting left on, green is fine, blue is a Samsung setting that cannot be read. Each meaning has a text color, a tint
+    for the tile behind a row, a line for the status card's border and a solid color for the icon square.
 -->
 <resources>
-    <color name="background">#FF121314</color>
-    <color name="card">#FF1B1C1E</color>
-    <color name="card_raised">#FF222326</color>
-    <color name="choice_selected">#FF2C2E31</color>
-    <color name="divider">#FF2A2C2F</color>
-    <color name="divider_strong">#FF3B3D41</color>
+    <color name="background">#FFF2F3F5</color>
+    <color name="card">#FFFFFFFF</color>
+    <color name="card_raised">#FFFFFFFF</color>
+    <color name="choice_selected">#FFEEF0F3</color>
+    <color name="divider">#FFE5E7EA</color>
+    <color name="divider_strong">#FFD3D6DB</color>
 
-    <color name="text">#FFECEDEE</color>
-    <color name="text_secondary">#FFA9ABAF</color>
-    <color name="text_muted">#FF7D8085</color>
+    <color name="text">#FF16171A</color>
+    <color name="text_secondary">#FF4B4F56</color>
+    <color name="text_muted">#FF6E727A</color>
 
-    <!-- Primary button: Off-white surface, dark text. -->
-    <color name="button_background">#FFECEDEE</color>
-    <color name="button_text">#FF121314</color>
+    <!-- The Check button: The logo's vermilion, darkened so white text reaches 4.9:1. -->
+    <color name="brand_button">#FFC8431F</color>
+    <color name="on_brand">#FFFFFFFF</color>
+    <color name="link">#FF1A5FC8</color>
 
-    <!-- Status lamps. Green fine, amber left on, grey unknown. The accent also marks the chosen option. -->
-    <color name="accent">#FF5FBF8C</color>
-    <color name="lamp_safe">#FF5FBF8C</color>
-    <color name="lamp_risk">#FFE9A94B</color>
-    <color name="lamp_neutral">#FF6E7176</color>
-    <color name="text_risk">#FFEDB45E</color>
+    <!-- The chosen option's ring in the choice window. -->
+    <color name="accent">#FF2F9A63</color>
 
-    <color name="warning_background">#FF272117</color>
-    <color name="warning_border">#FF4A3B1F</color>
+    <color name="risk_text">#FF8F5600</color>
+    <color name="risk_tint">#FFFFF3E0</color>
+    <color name="risk_line">#FFF1D3A2</color>
+    <color name="risk_solid">#FFE39A2B</color>
+    <color name="on_risk">#FF3B2500</color>
+
+    <color name="safe_text">#FF1D7448</color>
+    <color name="safe_tint">#FFE5F5EC</color>
+    <color name="safe_line">#FFBFE3CF</color>
+    <color name="safe_solid">#FF2F9A63</color>
+    <color name="on_safe">#FFFFFFFF</color>
+
+    <color name="info_text">#FF2F548C</color>
+    <color name="info_tint">#FFE9EFF9</color>
+    <color name="info_line">#FFC9D7EE</color>
+    <color name="info_solid">#FF5B82C4</color>
+    <color name="on_info">#FFFFFFFF</color>
 </resources>

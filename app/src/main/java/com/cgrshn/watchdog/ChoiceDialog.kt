@@ -14,9 +14,9 @@ import android.widget.TextView
 import kotlin.math.min
 
 /**
- * The app's own choice window, used for the language and the check interval. It is drawn like the screen's cards
- * (graphite surface, rounded corners, hairline border), so it reads as part of the app rather than a system dialog. The
- * chosen option carries a green ring, in the same visual language as the status lamps.
+ * The app's own choice window, used for the check interval, the language and the theme. It is drawn like the screen's
+ * cards (the card surface of the current theme, rounded corners, hairline border), so it reads as part of the app rather
+ * than a system dialog. The chosen option carries a green ring, the green of a setting that is fine.
  */
 object ChoiceDialog {
     private const val SIDE_MARGIN_DP = 24

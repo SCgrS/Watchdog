@@ -27,10 +27,10 @@ These values are used on the phone at the moment of the check and are not record
 
 ## What the app stores
 
-The app keeps a few values in its private storage on your phone: The check interval and the language you chose, the time
-of the last and the next check, whether notification permission was already asked and whether an Auto Blocker reminder
-is waiting. These values are not backed up to the cloud and are not moved to a new phone. They are deleted when you
-uninstall the app.
+The app keeps a few values in its private storage on your phone: The check interval, the language and the theme you
+chose, the time of the last and the next check, whether notification permission was already asked and whether an Auto
+Blocker reminder is waiting. These values are not backed up to the cloud and are not moved to a new phone. They are
+deleted when you uninstall the app.
 
 ## Permissions
 
@@ -92,9 +92,9 @@ Bu değerler denetim anında telefonda kullanılır, kaydedilmez ve hiçbir yere
 
 ## Uygulamanın sakladıkları
 
-Uygulama telefondaki kendine ait alanda birkaç değer saklar: Seçtiğiniz denetim aralığı ve dil, son ve sonraki denetimin
-zamanı, bildirim izninin daha önce sorulup sorulmadığı ve bekleyen bir Otomatik Engelleyici hatırlatması olup olmadığı.
-Bu değerler buluta yedeklenmez ve yeni telefona taşınmaz. Uygulamayı kaldırdığınızda silinir.
+Uygulama telefondaki kendine ait alanda birkaç değer saklar: Seçtiğiniz denetim aralığı, dil ve tema, son ve sonraki
+denetimin zamanı, bildirim izninin daha önce sorulup sorulmadığı ve bekleyen bir Otomatik Engelleyici hatırlatması olup
+olmadığı. Bu değerler buluta yedeklenmez ve yeni telefona taşınmaz. Uygulamayı kaldırdığınızda silinir.
 
 ## İzinler
 

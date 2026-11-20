@@ -48,6 +48,19 @@ class FormatTest {
     }
 
     @Test
+    fun lastCheckSaysTodayYesterdayOrTheDate() {
+        val now = at(20, 10, 40)
+        assertEquals("Today 10:33", Format.lastCheck(at(20, 10, 33), now, Language.ENGLISH, zone))
+        assertEquals("Yesterday 22:05", Format.lastCheck(at(19, 22, 5), now, Language.ENGLISH, zone))
+        assertEquals("18 November 09:00", Format.lastCheck(at(18, 9, 0), now, Language.ENGLISH, zone))
+        assertEquals("Bugün 10.33", Format.lastCheck(at(20, 10, 33), now, Language.TURKISH, zone))
+        assertEquals("Dün 22.05", Format.lastCheck(at(19, 22, 5), now, Language.TURKISH, zone))
+        assertEquals("18 Kasım 09.00", Format.lastCheck(at(18, 9, 0), now, Language.TURKISH, zone))
+        assertEquals("27 November 10:45", Format.shortDate(at(27, 10, 45), Language.ENGLISH, zone))
+        assertEquals("27 Kasım 10.45", Format.shortDate(at(27, 10, 45), Language.TURKISH, zone))
+    }
+
+    @Test
     fun lists() {
         assertEquals("A", Format.list(listOf("A"), Language.ENGLISH))
         assertEquals("A and B", Format.list(listOf("A", "B"), Language.ENGLISH))

@@ -36,6 +36,10 @@ object Format {
         // Turkish spelling rules (TDK) separate hours and minutes with a dot.
         Language.TURKISH to DateTimeFormatter.ofPattern("d MMMM EEEE HH.mm", Language.TURKISH.locale),
     )
+    private val SHORT_DATE = mapOf(
+        Language.ENGLISH to DateTimeFormatter.ofPattern("d MMMM HH:mm", Language.ENGLISH.locale),
+        Language.TURKISH to DateTimeFormatter.ofPattern("d MMMM HH.mm", Language.TURKISH.locale),
+    )
     private val TIME = mapOf(
         Language.ENGLISH to DateTimeFormatter.ofPattern("HH:mm", Language.ENGLISH.locale),
         Language.TURKISH to DateTimeFormatter.ofPattern("HH.mm", Language.TURKISH.locale),
@@ -72,6 +76,25 @@ object Format {
     /** "14:32", "14.32". */
     fun time(ms: Long, language: Language = Language.DEFAULT, zone: ZoneId = ZoneId.systemDefault()): String =
         TIME.getValue(language).format(Instant.ofEpochMilli(ms).atZone(zone))
+
+    /** "27 November 10:45", "27 Kasım 10.45": A date short enough for one line under a setting's name. */
+    fun shortDate(ms: Long, language: Language = Language.DEFAULT, zone: ZoneId = ZoneId.systemDefault()): String =
+        SHORT_DATE.getValue(language).format(Instant.ofEpochMilli(ms).atZone(zone))
+
+    /**
+     * The last check, as it reads after "Last check:": "Today 14:30", "Yesterday 09:05", "12 November 14:30" or "Bugün
+     * 14.30", "Dün 09.05", "12 Kasım 14.30".
+     */
+    fun lastCheck(ms: Long, now: Long, language: Language = Language.DEFAULT, zone: ZoneId = ZoneId.systemDefault()): String {
+        val time = Instant.ofEpochMilli(ms).atZone(zone)
+        val today = Instant.ofEpochMilli(now).atZone(zone).toLocalDate()
+        val day = when (time.toLocalDate()) {
+            today -> if (language == Language.TURKISH) "Bugün" else "Today"
+            today.minusDays(1) -> if (language == Language.TURKISH) "Dün" else "Yesterday"
+            else -> return SHORT_DATE.getValue(language).format(time)
+        }
+        return day + " " + TIME.getValue(language).format(time)
+    }
 
     /** "A", "A and B", "A, B and C" or "A ve B", "A, B ve C". */
     fun list(items: List<String>, language: Language = Language.DEFAULT): String {

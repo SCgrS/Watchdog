@@ -7,20 +7,30 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.database.ContentObserver
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowInsets
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import kotlin.math.roundToInt
 
-/** The single screen: Status, manual check, check interval and language. Tapping a status row opens that setting. */
+/**
+ * The single screen: The status card (summary, one tile per setting, Check), Settings (check interval, language, theme)
+ * and About. Tapping a setting's tile opens that setting.
+ */
 class MainActivity : Activity() {
     private lateinit var store: Store
     private val handler = Handler(Looper.getMainLooper())
@@ -53,10 +63,12 @@ class MainActivity : Activity() {
         Notifier.createChannel(this)
         applyInsets()
         buildStatusRows()
+        showAbout()
 
         find<Button>(R.id.check_button).setOnClickListener { checkNow() }
         find<View>(R.id.interval_row).setOnClickListener { chooseInterval() }
         find<View>(R.id.language_row).setOnClickListener { chooseLanguage() }
+        find<View>(R.id.theme_row).setOnClickListener { chooseTheme() }
         find<Button>(R.id.notification_button).setOnClickListener { requestNotificationPermission(userAsked = true) }
     }
 
@@ -98,18 +110,41 @@ class MainActivity : Activity() {
 
     private fun show(snapshot: Snapshot) {
         showWarnings()
+        showSummary(snapshot)
         showStatusRow(ROW_USB, snapshot.usb, onIsRisky = true)
         showStatusRow(ROW_WIRELESS, snapshot.wireless, onIsRisky = true)
         showStatusRow(ROW_UNKNOWN_APPS, snapshot.unknownApps, onIsRisky = true, apps = snapshot.installers.map { it.label })
         showStatusRow(ROW_AUTO_BLOCKER, snapshot.autoBlocker, onIsRisky = false)
-        find<View>(R.id.auto_blocker_note).visibility =
-            if (snapshot.autoBlocker == State.UNKNOWN) View.VISIBLE else View.GONE
-        val lastCheck = store.lastCheck
-        find<TextView>(R.id.last_check).text =
-            if (lastCheck > 0) getString(R.string.last_check, Format.time(lastCheck, store.language)) else ""
         find<TextView>(R.id.interval_value).text = Format.interval(store.checkMinutes, store.language)
-        find<TextView>(R.id.next_check).text = Format.date(store.nextCheck, store.language)
+        find<TextView>(R.id.next_check).text = getString(R.string.next_check_short, Format.shortDate(store.nextCheck, store.language))
         find<TextView>(R.id.language_value).text = store.language.displayName
+        find<TextView>(R.id.theme_value).setText(store.theme.label)
+    }
+
+    /**
+     * The summary on top of the status card, in the color of what it says: How many settings are left on (amber), or that
+     * nothing is left on (green). It never says "all clear": Auto Blocker cannot be read on Samsung phones.
+     */
+    private fun showSummary(snapshot: Snapshot) {
+        val leftOn = listOf(snapshot.usb, snapshot.wireless, snapshot.unknownApps).count { it == State.ON }
+        val (meaning, title) = when {
+            leftOn > 0 -> Meaning.RISK to resources.getQuantityString(R.plurals.summary_left_on, leftOn, leftOn)
+            snapshot.autoBlocker == State.OFF -> Meaning.RISK to getString(R.string.summary_auto_blocker_off)
+            else -> Meaning.SAFE to getString(R.string.summary_nothing_on)
+        }
+        find<TextView>(R.id.summary_title).text = title
+        find<View>(R.id.summary_badge).backgroundTintList = ColorStateList.valueOf(getColor(meaning.solid))
+        find<ImageView>(R.id.summary_icon).apply {
+            setImageResource(if (meaning == Meaning.RISK) R.drawable.ic_warning else R.drawable.ic_check)
+            imageTintList = ColorStateList.valueOf(getColor(meaning.onSolid))
+        }
+        (find<View>(R.id.hero).background.mutate() as GradientDrawable).setStroke(dp(1), getColor(meaning.line))
+        val lastCheck = store.lastCheck
+        find<TextView>(R.id.last_check).text = if (lastCheck > 0) {
+            getString(R.string.last_check, Format.lastCheck(lastCheck, System.currentTimeMillis(), store.language))
+        } else {
+            ""
+        }
     }
 
     /**
@@ -134,21 +169,20 @@ class MainActivity : Activity() {
 
     private fun buildStatusRows() {
         val container = find<LinearLayout>(R.id.status_rows)
-        // Tapping a row opens that setting. For USB and wireless debugging, Developer options scrolls to the setting. The
-        // line under the name tells where the setting lives on the phone. Install unknown apps opens the switch of the
-        // app it is allowed for, or the list when there are several.
+        // Tapping a tile opens that setting. For USB and wireless debugging, Developer options scrolls to the setting.
+        // Install unknown apps opens the switch of the app it is allowed for, or the list when there are several.
         val rowInfos = listOf(
-            RowInfo(ROW_USB, R.string.usb_debugging, R.string.location_developer_options, Page.USB),
-            RowInfo(ROW_WIRELESS, R.string.wireless_debugging, R.string.location_developer_options, Page.WIRELESS),
-            RowInfo(ROW_UNKNOWN_APPS, R.string.unknown_apps, R.string.location_special_access, Page.UNKNOWN_APPS),
-            RowInfo(ROW_AUTO_BLOCKER, R.string.auto_blocker, R.string.location_security, Page.AUTO_BLOCKER),
+            RowInfo(ROW_USB, R.string.usb_debugging, R.string.location_developer_options, R.drawable.ic_usb, Page.USB),
+            RowInfo(ROW_WIRELESS, R.string.wireless_debugging, R.string.location_developer_options, R.drawable.ic_wifi, Page.WIRELESS),
+            RowInfo(ROW_UNKNOWN_APPS, R.string.unknown_apps, R.string.location_special_access, R.drawable.ic_install, Page.UNKNOWN_APPS),
+            RowInfo(ROW_AUTO_BLOCKER, R.string.auto_blocker, R.string.location_security, R.drawable.ic_shield, Page.AUTO_BLOCKER),
         )
         val inflater = LayoutInflater.from(this)
-        for ((index, info) in rowInfos.withIndex()) {
-            if (index > 0) inflater.inflate(R.layout.divider, container, true)
+        for (info in rowInfos) {
             val row = inflater.inflate(R.layout.row_status, container, false)
             row.findViewById<TextView>(R.id.name).setText(info.name)
             row.findViewById<TextView>(R.id.location).setText(info.location)
+            row.findViewById<ImageView>(R.id.icon).setImageResource(info.icon)
             row.setOnClickListener {
                 val single = lastSnapshot?.installers?.singleOrNull()?.packageName
                 SettingsPages.open(this, info.page, app = if (info.page == Page.UNKNOWN_APPS) single else null)
@@ -162,36 +196,58 @@ class MainActivity : Activity() {
     /**
      * [onIsRisky]: For debugging settings and Install unknown apps being on is the risk, for Auto Blocker being off.
      * [apps]: The apps Install unknown apps is allowed for. While there are any, they take the place of the location line.
+     *
+     * The tile takes the color of what the state means: Amber left on, green fine, blue unknown. Auto Blocker appears only
+     * on phones that have it (Samsung). While it cannot be read, its tile explains that instead of showing a value.
      */
     private fun showStatusRow(key: String, state: State, onIsRisky: Boolean, apps: List<String> = emptyList()) {
         val row = rows[key] ?: return
+        if (key == ROW_AUTO_BLOCKER && state == State.ABSENT) {
+            row.visibility = View.GONE
+            return
+        }
+        row.visibility = View.VISIBLE
         val risky = (state == State.ON && onIsRisky) || (state == State.OFF && !onIsRisky)
-        val text = when (state) {
+        val meaning = when {
+            risky -> Meaning.RISK
+            state == State.ON || state == State.OFF -> Meaning.SAFE
+            else -> Meaning.INFO
+        }
+        row.backgroundTintList = ColorStateList.valueOf(getColor(meaning.tint))
+        row.findViewById<View>(R.id.badge).backgroundTintList = ColorStateList.valueOf(getColor(meaning.solid))
+        row.findViewById<ImageView>(R.id.icon).imageTintList = ColorStateList.valueOf(getColor(meaning.onSolid))
+
+        val autoBlockerNote = key == ROW_AUTO_BLOCKER && state == State.UNKNOWN
+        val stateText = when (state) {
             State.ON -> R.string.state_on
             State.OFF -> R.string.state_off
             State.UNKNOWN -> R.string.state_unknown
             State.ABSENT -> R.string.state_absent
         }
-        val lamp = when {
-            risky -> R.color.lamp_risk
-            state == State.ON || state == State.OFF -> R.color.lamp_safe
-            else -> R.color.lamp_neutral
-        }
         val value = row.findViewById<TextView>(R.id.value)
-        value.setText(text)
-        value.setTextColor(getColor(if (risky) R.color.text_risk else R.color.text_secondary))
-        row.findViewById<View>(R.id.lamp).backgroundTintList = ColorStateList.valueOf(getColor(lamp))
-        val locationView = row.findViewById<TextView>(R.id.location)
-        if (apps.isEmpty()) {
-            locationView.setText(locations.getValue(key))
-            locationView.setTextColor(getColor(R.color.text_muted))
-        } else {
-            locationView.text = Format.list(apps, store.language)
-            locationView.setTextColor(getColor(R.color.text_risk))
+        value.visibility = if (autoBlockerNote) View.GONE else View.VISIBLE
+        value.setText(stateText)
+        value.setTextColor(getColor(meaning.text))
+
+        val location = row.findViewById<TextView>(R.id.location)
+        when {
+            apps.isNotEmpty() -> {
+                location.text = Format.list(apps, store.language)
+                location.setTextColor(getColor(R.color.risk_text))
+            }
+            autoBlockerNote -> {
+                location.setText(R.string.auto_blocker_note)
+                location.setTextColor(getColor(R.color.text_secondary))
+            }
+            else -> {
+                location.setText(locations.getValue(key))
+                location.setTextColor(getColor(R.color.text_muted))
+            }
         }
-        // Screen readers read the name, the value and where the setting lives on the phone (or the apps it is on for).
-        val location = locationView.text
-        row.contentDescription = getString(rowName(key)) + ", " + getString(text) + ", " + location
+        // Screen readers read the name, the value and the line under the name.
+        val name = getString(rowName(key))
+        row.contentDescription =
+            if (autoBlockerNote) "$name, ${location.text}" else "$name, ${getString(stateText)}, ${location.text}"
     }
 
     private fun rowName(key: String) = when (key) {
@@ -199,6 +255,29 @@ class MainActivity : Activity() {
         ROW_WIRELESS -> R.string.wireless_debugging
         ROW_UNKNOWN_APPS -> R.string.unknown_apps
         else -> R.string.auto_blocker
+    }
+
+    /** About: The version and the developer's address, of which only the address is a link. */
+    private fun showAbout() {
+        val versionName = try {
+            if (Build.VERSION.SDK_INT >= 33) {
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0)).versionName
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getPackageInfo(packageName, 0).versionName
+            }
+        } catch (_: PackageManager.NameNotFoundException) {
+            null
+        }
+        find<TextView>(R.id.version).text = getString(R.string.version_line, versionName.orEmpty())
+
+        val label = getString(R.string.developer_label) + " "
+        val text = SpannableString(label + DEVELOPER_TEXT)
+        text.setSpan(URLSpan(DEVELOPER_URL), label.length, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        find<TextView>(R.id.developer).apply {
+            this.text = text
+            movementMethod = LinkMovementMethod.getInstance()
+        }
     }
 
     private fun showWarnings() {
@@ -281,6 +360,22 @@ class MainActivity : Activity() {
         }
     }
 
+    /** Theme choice: Following the phone (the default), light or dark. Android rebuilds the screen in the new mode. */
+    private fun chooseTheme() {
+        val themes = AppTheme.entries
+        ChoiceDialog.show(
+            this,
+            title = R.string.theme,
+            subtitle = R.string.theme_description,
+            options = themes.map { getString(it.label) },
+            selected = themes.indexOf(store.theme),
+        ) { index ->
+            store.theme = themes[index]
+            themes[index].apply(this)
+            find<TextView>(R.id.theme_value).setText(themes[index].label)
+        }
+    }
+
     /**
      * Since Android 15 the screen is drawn edge to edge. Scrolled content is cut below the status bar (so it does not clash
      * with the clock) and may pass behind the navigation bar, but the last row ends above it.
@@ -299,9 +394,18 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).roundToInt()
+
     private fun <T : View> find(id: Int): T = findViewById(id)
 
-    private data class RowInfo(val key: String, val name: Int, val location: Int, val page: Page)
+    private data class RowInfo(val key: String, val name: Int, val location: Int, val icon: Int, val page: Page)
+
+    /** What a color says: A setting left on, a setting that is fine, or one that cannot be read. */
+    private enum class Meaning(val tint: Int, val line: Int, val solid: Int, val onSolid: Int, val text: Int) {
+        RISK(R.color.risk_tint, R.color.risk_line, R.color.risk_solid, R.color.on_risk, R.color.risk_text),
+        SAFE(R.color.safe_tint, R.color.safe_line, R.color.safe_solid, R.color.on_safe, R.color.safe_text),
+        INFO(R.color.info_tint, R.color.info_line, R.color.info_solid, R.color.on_info, R.color.info_text),
+    }
 
     private companion object {
         const val CHANGE_DELAY_MS = 500L
@@ -309,5 +413,7 @@ class MainActivity : Activity() {
         const val ROW_WIRELESS = "wireless"
         const val ROW_UNKNOWN_APPS = "unknown_apps"
         const val ROW_AUTO_BLOCKER = "auto_blocker"
+        const val DEVELOPER_TEXT = "x.com/CgrShn"
+        const val DEVELOPER_URL = "https://x.com/CgrShn"
     }
 }

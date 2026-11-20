@@ -16,8 +16,8 @@ target SDK 37. The sources are in `app/src/main/java/com/cgrshn/watchdog`:
 
 | File | Contents |
 |---|---|
-| `MainActivity.kt` | The single screen: Status, Check button, check interval and language |
-| `ChoiceDialog.kt` | The app's own choice window for the language and the check interval |
+| `MainActivity.kt` | The single screen: Status card with the Check button, Settings (interval, language, theme), About |
+| `ChoiceDialog.kt` | The app's own choice window for the check interval, the language and the theme |
 | `Checker.kt` | One check: Reads the settings, makes the decision, applies the notification and the schedule |
 | `Decision.kt` | All decision rules, independent of Android (`State`, `Snapshot`, `Trigger`, `ReminderType`, `Delivery`, `Outcome`) |
 | `SettingsReader.kt` | Reads the watched settings: USB and wireless debugging, Auto Blocker and Install unknown apps |
@@ -28,6 +28,7 @@ target SDK 37. The sources are in `app/src/main/java/com/cgrshn/watchdog`:
 | `Store.kt` | The small persistent store (`SharedPreferences`) |
 | `Localized.kt` | Applies the language chosen in the app |
 | `Formatting.kt` | Check intervals (`Intervals`), languages (`Language`) and interval, date and list formats (`Format`) |
+| `AppTheme.kt` | Light, dark or following the phone, applied with `UiModeManager.setApplicationNightMode` |
 
 The unit tests are in `app/src/test/java/com/cgrshn/watchdog` (`DecisionTest.kt`, `FormatTest.kt`). The build-time
 manifest check (`ManifestCheck`) is in `app/build.gradle.kts`.
@@ -143,7 +144,7 @@ The app is published on Google Play as well as on GitHub. The package name `com.
   name and "You have a reminder". When the phone is set to hide sensitive content on the lock screen, the locked phone
   shows only that version. When it is set to show all content, Android shows the full text. An app cannot override this:
   Setting the channel's `lockscreenVisibility` was tried, and Android 16 resets it to "no override" for the app's own
-  channels. The Auto Blocker action button works only after unlocking (`setAuthenticationRequired`).
+  channels. The notification's one button, Show details, opens the app's screen, which appears only after unlocking.
 - **Fake change signals:** Any app can send a change signal for a settings address (`ContentResolver.notifyChange`).
   Such a signal cannot postpone a check (see Scheduling) and never raises a new alert. While the screen is open, signals
   that arrive close together are merged into one check 500 ms after the last one, so a flood of signals cannot keep the
@@ -153,10 +154,10 @@ The app is published on Google Play as well as on GitHub. The package name `com.
   screen. Settings pages are first sent to the system Settings app by package (`com.android.settings`), then as plain
   intents for phones whose Settings app has another package name. The intents carry only a package name (the app's
   own, or the one app shown on the Install unknown apps row) and a settings key.
-- **Data:** A few values in the private `SharedPreferences` file `store`: The check interval, the language, the last and
-  the next check time, whether the notification permission was asked and the pending Auto Blocker reminder. Nothing is
-  backed up to the cloud or moved to a new phone (`allowBackup="false"` and `res/xml/backup_rules.xml`). The manifest
-  also sets `usesCleartextTraffic="false"` and an empty `taskAffinity`.
+- **Data:** A few values in the private `SharedPreferences` file `store`: The check interval, the language, the theme,
+  the last and the next check time, whether the notification permission was asked and the pending Auto Blocker reminder.
+  Nothing is backed up to the cloud or moved to a new phone (`allowBackup="false"` and `res/xml/backup_rules.xml`). The
+  manifest also sets `usesCleartextTraffic="false"` and an empty `taskAffinity`.
 - **Dependencies:** At run time only Android's own classes and the Kotlin standard library. JUnit 4.13.2 is used only
   by the unit tests. Google's repository serves only the `com.android`, `com.google` and `androidx` groups, everything
   else comes from Maven Central, and project-level repositories are refused (`settings.gradle.kts`). The SHA-256 of
@@ -223,10 +224,18 @@ in Samsung's `SecSettings.apk` and are the same as in AOSP: `enable_adb` for USB
 wireless debugging. On phones that do not support it, the page simply opens (`Page.USB`, `Page.WIRELESS`). If Developer
 options cannot be opened, the Settings app opens. This path is used only by the rows on the main screen.
 
-Tapping the debugging notification opens the app, not the settings page: The screen shows the debugging settings and
-Auto Blocker together, so Auto Blocker is not forgotten on the way. The Auto Blocker notifications and the Auto Blocker
-button in the debugging notification open Auto Blocker's page directly, through the non-exported
-`SettingsOpenerActivity`.
+Tapping the left-on notification opens the app, not the settings page: The screen shows the settings and Auto Blocker
+together, so Auto Blocker is not forgotten on the way. Every notification has one button, Show details, which opens the
+app too. It replaced an Auto Blocker button (the owner's request, 2026-11-20): The same button on every phone, and the
+Samsung setting stays on the screen. Tapping the Auto Blocker notifications opens Auto Blocker's page directly, through
+the non-exported `SettingsOpenerActivity`.
+
+The Auto Blocker row appears only on phones that have Auto Blocker (Samsung, One UI 6 and later). Other phones have no
+such switch (checked 2026-11-20): Xiaomi's global HyperOS and Honor's MagicOS allow installing unknown apps per app,
+like Android, which the Install unknown apps row already covers. Xiaomi's "Pure mode" (2021) stayed in China. Google's
+Advanced Protection (Android 16) blocks sideloading for the whole phone and can be read with
+`AdvancedProtectionManager`, but it needs a third permission (`QUERY_ADVANCED_PROTECTION_MODE`) and is meant for people
+at high risk. The owner decided not to watch it.
 
 Auto Blocker's page is `com.samsung.android.rampart/.ui.MainSettingActivity`, action
 `com.samsung.android.rampart.action.MAIN_SETTING_ACTIVITY` (exported, needs no permission). It is opened only when the
@@ -313,8 +322,8 @@ Nothing runs in the background all the time. The process lives only for a short 
 
 ## Language
 
-The app speaks English and Turkish. The language is chosen in the app (App › Language), independent of the phone's
-language. The default is English.
+The app speaks English and Turkish. The language is chosen in the app (Settings › Language), independent of the
+phone's language. The default is English.
 
 - English texts are in `values/` (the default), Turkish ones in `values-tr/`. The app's name is "Watchdog" in both
   languages (`translatable="false"`). Setting names follow Samsung's One UI in each language (Developer options, Auto
@@ -330,39 +339,50 @@ language. The default is English.
 - Android's per-app language setting (`localeConfig`) is not used on purpose: The app's language must not follow the
   phone's language, and Android's per-app language is only available from Android 13. AndroidX is not used, so the
   language is applied by hand.
-- Interval, date and list formats are in `Format`, per language: English "Sunday, 15 November at 14:30", "Every 6
-  hours", "A, B and C". Turkish "15 Kasım Pazar 14.30" (Turkish spelling rules separate hours and minutes with a dot), "6
-  saatte bir", "A, B ve C".
+- Interval, date and list formats are in `Format`, per language: English "Today 10:33", "27 November 10:45", "Every
+  6 hours", "A, B and C". Turkish "Bugün 10.33", "27 Kasım 10.45" (Turkish spelling rules separate hours and minutes
+  with a dot), "6 saatte bir", "A, B ve C". The last check says Today or Yesterday when it can (`Format.lastCheck`).
 - The App Bundle is not split by language (`bundle.language.enableSplit = false`): The texts of the language chosen in
   the app must be present on every install.
 
 ## Interface
 
-A single screen built with Android's own `View`s, dark theme only (`Theme.DeviceDefault`, so system windows look like
-One UI on Samsung phones). The direction is an instrument panel on a night shift: Surfaces and text are graphite and
-colorless, color appears only in the status lamps (green fine, amber left on, grey unknown). The status card is the one
-bright element of the screen.
+A single screen built with Android's own `View`s. Design 1 of three drafts, chosen by the owner on 2026-11-20. Light and
+dark themes, following the phone by default (`Theme.DeviceDefault.DayNight`, so system windows look like One UI on
+Samsung phones). Surfaces and text stay neutral, color carries meaning: Amber is a setting left on, green is fine, blue
+is a Samsung setting that cannot be read. Each meaning has a text color, a tint for the tile behind a row, a line for
+the status card's border and a solid color for the icon square (`values/colors.xml` light, `values-night/colors.xml`
+dark). The status card is the main element of the screen.
 
-- From top to bottom: The app's name and tagline, the warnings (notifications off, battery restriction or pausing), the
-  "Status" title with the time of the last check on its right, the status card, the Check button, the "Checks" section
-  (check interval, next check) and the "App" section (language), and a line saying the app only reads settings.
-- Each status row has a lamp, the setting's name, where the setting lives on the phone under the name, and the value.
-  While apps are allowed to install unknown apps, their names take the place of the location line, in the amber of a
-  setting left on. There is no big summary headline above the card: It would claim "all clear" while Auto Blocker is
-  unknown.
-- Every row that can be tapped has a chevron on the right (`ic_chevron`, `text_secondary`). "Next check" cannot be
-  tapped and has none. Screen readers read each status row as name, value and location.
+- From top to bottom: The logo and the app's name, the warnings (notifications off, battery restriction or pausing),
+  the status card, the "Settings" section (check interval with the next check under it, language, theme) and "About"
+  (what the app is and is not, the version and the developer's address as a link).
+- **Status card:** A summary on top (how many settings are left on, in amber, or "Nothing left on" in green, with the
+  time of the last check: "Last check: Today 10:33"), then one tinted tile per setting and the Check button in the
+  logo's vermilion. The card's border takes the summary's color. The summary never says "all clear": Auto Blocker cannot
+  be read on Samsung phones.
+- **Tiles:** The setting's icon on a square in the meaning's solid color, the name, the line under it (where the
+  setting lives, the apps Install unknown apps is allowed for in amber, or Auto Blocker's note), the value and a
+  chevron. Auto Blocker's tile is blue, has no value and explains that it cannot be checked. Screen readers read each
+  tile as name, value and the line under it.
+- **Theme:** Settings › Theme offers Follow system (the default, the owner's decision for this app), Light and Dark.
+  `AppTheme.apply` calls `UiModeManager.setApplicationNightMode` (Android 12 and later, no permission): Android keeps
+  the mode for the app and recreates the screen. Status and navigation bar icons follow (`@bool/light_bars`).
+- **Icons:** Material Icons (Google, Apache-2.0), 24 dp vectors in `res/drawable/ic_*.xml`, colored where they are
+  used. The logo in the header (`ic_logo.xml`) is the launcher icon's visible part on a rounded vermilion square.
+- **Links:** Only the developer's address is a link (`URLSpan`, underlined, `@color/link`). It opens in the browser.
 - Since Android 15 the screen is drawn edge to edge. Scrolled content is cut below the status bar and the last row ends
   above the navigation bar.
-- **Choice window** (`ChoiceDialog`): The language and the check interval are chosen in the app's own window, not in a
-  system `AlertDialog`, so it reads as part of the app. It is a raised card in the screen's colors (`card_raised`, 24 dp
-  corners, a hairline border), with a title, a short line about what the choice changes, the options and a quiet Cancel.
-  The chosen option has a green ring with a dot, in the same visual language as the status lamps. It follows the row's
-  selected state, which screen readers announce. Tapping the current option or Cancel only closes the window. The
-  window is at most 420 dp wide, with 24 dp side margins on narrow screens.
-- The final visual check is done on a phone, not only in the emulator: Samsung's font is wider. "Otomatik Engelleyici"
-  fit on one line in the emulator but wrapped on the phone. The values are therefore short ("Unknown", "Bilinmiyor"),
-  the lamp gap is 8 dp and rows with a chevron have 12 dp end padding.
+- **Choice window** (`ChoiceDialog`): The check interval, the language and the theme are chosen in the app's own
+  window, not in a system `AlertDialog`, so it reads as part of the app. It is a raised card in the screen's colors
+  (`card_raised`, 24 dp corners, a hairline border), with a title, a short line about what the choice changes, the
+  options and a quiet Cancel. The chosen option has a green ring with a dot. It follows the row's selected state, which
+  screen readers announce. Tapping the current option or Cancel only closes the window. The window is at most 420 dp
+  wide, with 24 dp side margins on narrow screens.
+- The final visual check is done on a phone, not only in a browser or the emulator: Samsung's font is wider. In the
+  drafts "Kablosuz hata ayıklama" and the next check fit on one line, on the phone they wrapped. The tiles therefore use
+  15 sp names and tight paddings, the next check is short ("27 Kasım 10.45") and the interval's value sits on the name's
+  line, so the next check has the whole width.
 
 ## Icon
 
@@ -375,6 +395,7 @@ symbol and a notification icon drawn separately at 24 dp.
   `res/drawable/ic_launcher_monochrome.xml` (the same silhouette, the prongs are holes).
 - Notification: `res/drawable/ic_notification.xml` (24 dp, thinnest part and gap 2 dp, whole-number coordinates). The
   notification color is `@color/brand`, the same vermilion.
+- In the app: `res/drawable/ic_logo.xml`, the visible 72 dp of the launcher icon on a rounded square, at 44 dp.
 
 ## Testing on a phone
 
@@ -418,6 +439,11 @@ What was checked:
   apps the row opens the list (`Settings$ManageExternalSourcesActivity`). With one app it opens that app's switch
   (`Settings$ManageAppExternalSourcesActivity`), tested with a temporary build that opened the first app. One UI 8 names
   the place Apps › ⋮ › Special access (Uygulamalar › Özel erişim). The long Turkish name wraps to two lines on the row.
+
+- Design 1 and the themes (2026-11-20, 0.1.3): The screen in both languages, light and dark. With the phone in dark
+  mode, Settings › Theme › Light turned the screen and the status bar icons light at once, and Follow system turned it
+  back. The notification shows only Show details, which points to `MainActivity`. On this phone the Auto Blocker tile
+  appears, the Install unknown apps tile names the allowed app.
 
 Not yet tested on the phone: Turning Install unknown apps off and the notification going away (the phone's settings were
 not changed during the test). The debugging notification turning into "Turn on Auto Blocker now" when the settings go

@@ -54,4 +54,9 @@ class Store(context: Context) {
     var language: Language
         get() = Language.fromCode(prefs.getString("language", null))
         set(value) { prefs.edit().putString("language", value.code).commit() }
+
+    /** Light, dark or following the phone (the default). Android keeps the applied mode itself, see [AppTheme]. */
+    var theme: AppTheme
+        get() = AppTheme.fromCode(prefs.getString("theme", null))
+        set(value) { prefs.edit().putString("theme", value.code).commit() }
 }

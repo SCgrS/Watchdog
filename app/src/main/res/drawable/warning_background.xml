@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Warnings above the status card (notifications off, battery): The amber of a setting left on. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="@color/warning_background" />
-    <stroke android:width="1dp" android:color="@color/warning_border" />
-    <corners android:radius="16dp" />
+    <solid android:color="@color/risk_tint" />
+    <stroke android:width="1dp" android:color="@color/risk_line" />
+    <corners android:radius="20dp" />
 </shape>

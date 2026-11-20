@@ -29,8 +29,8 @@ android {
         applicationId = "com.cgrshn.watchdog"
         minSdk = 31
         targetSdk = 37
-        versionCode = 5
-        versionName = "0.1.2"
+        versionCode = 6
+        versionName = "0.1.3"
     }
 
     signingConfigs {

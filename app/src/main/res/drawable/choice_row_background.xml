@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Choice row: The chosen option sits on a slightly raised surface, every row ripples on touch. -->
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#1FFFFFFF">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="?android:attr/colorControlHighlight">
     <item>
         <selector>
             <item android:state_selected="true">

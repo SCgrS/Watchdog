@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The status card, the main element of the screen. Its border color is set in code (risk or safe line). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/card" />
+    <stroke android:width="1dp" android:color="@color/divider" />
+    <corners android:radius="28dp" />
+</shape>

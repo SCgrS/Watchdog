@@ -14,8 +14,8 @@ açık kalan varsa bildirimle hatırlatır. Bildirime dokununca uygulama açıl�
 hiçbir ayarı değiştiremez.
 
 <p align="center">
-  <img src="docs/screen-main-tr.png" width="45%" alt="Ana ekran: USB hata ayıklama açık, kablosuz hata ayıklama kapalı, Otomatik Engelleyici bilinmiyor, altında Denetle düğmesi ve denetim aralığı">
-  <img src="docs/screen-language-tr.png" width="45%" alt="Dil penceresi: Türkçe yeşil halkayla seçili, üstünde English, altta Vazgeç">
+  <img src="docs/screen-main-tr.png" width="45%" alt="Ana ekran: 2 ayar açık kaldı, USB hata ayıklama açık, kablosuz hata ayıklama kapalı, bilinmeyen uygulama yükleme izni bir uygulamada açık, Otomatik Engelleyici açıklaması, Denetle düğmesi ve altında Ayarlar">
+  <img src="docs/screen-language-tr.png" width="45%" alt="Ayarların üstünde dil penceresi: Türkçe yeşil halkayla seçili, üstünde English, altta Vazgeç">
 </p>
 
 ## Kurulum
@@ -32,7 +32,7 @@ telefonlarda uygulama hata ayıklama ayarlarını ve bilinmeyen uygulama yüklem
 5. Uygulamanın önerdiği gibi **Uygulama bilgileri › Pil › Kısıtlanmamış**'ı seçin. Yoksa Samsung uygulamayı uyutabilir ve
    hatırlatmalar gelmez.
 6. Otomatik Engelleyici'yi yeniden açın.
-7. Uygulama İngilizce açılır. Türkçe için ana ekranda **App › Language**'e dokunup **Türkçe**'yi seçin.
+7. Uygulama İngilizce açılır. Türkçe için ana ekranda **Settings › Language**'e dokunup **Türkçe**'yi seçin.
 
 APK, Watchdog'un yayım anahtarıyla imzalıdır. Sertifikasının SHA-256 parmak izi
 `32:03:63:47:A0:5B:5C:D3:BA:28:58:37:D7:E4:5A:7C:51:9F:B4:15:E2:FF:62:2E:BE:5B:25:F5:2C:3D:10:6E`.
@@ -45,7 +45,8 @@ Uygulamayı kaynak kodundan derlemek için [docs/DEVELOPMENT.md](docs/DEVELOPMEN
   yöneticisi, Shizuku, root ve `INTERNET` izni yoktur. Ayarları yalnızca okur, bildirim gösterir ve ilgili ayar
   sayfasını açar. Kapatmayı siz yaparsınız. Yalnız iki izin ister: Bildirim göstermek ve telefon açılınca denetimi
   yeniden kurmak.
-- **İki ayar:** Denetim aralığını (saatte bir ile haftada bir arası) ve dili (İngilizce ya da Türkçe) seçersiniz.
+- **Üç ayar:** Denetim aralığını (saatte bir ile haftada bir arası), dili (İngilizce ya da Türkçe) ve temayı (açık,
+  koyu ya da telefonu izleyen) seçersiniz.
 - **Kapanınca susar:** Ayarı kapattığınız anda bildirim kalkar. Bilinmeyen uygulama yükleme izninde Watchdog'a
   döndüğünüzde kalkar.
 - **Az kaynak:** Arka planda sürekli çalışmaz. Sistem denetim anında uygulamayı kısa bir an uyandırır. Paket yaklaşık 85 KB'tır,
@@ -57,11 +58,10 @@ Uygulamayı kaynak kodundan derlemek için [docs/DEVELOPMENT.md](docs/DEVELOPMEN
 
 Uygulama seçtiğiniz aralık dolunca USB hata ayıklamaya, kablosuz hata ayıklamaya ve bilinmeyen uygulama yükleme iznine
 bakar. Biri açıksa bildirim gelir. Bildirimin başlığı açık olan ayarı ya da kaç ayarın açık olduğunu söyler. Bildirime
-dokununca Watchdog açılır: Ayarlar ve Otomatik Engelleyici aynı ekranda görünür, ayarları kapatırken Otomatik
-Engelleyici unutulmaz. Ekranda bir ayarın
-satırına dokununca o ayar açılır. Bildirimdeki **Otomatik Engelleyici** düğmesi doğrudan onun sayfasını açar. Ayarı
-kapatana dek bildirim yerinde kalır, her aralıkta yeniden uyarır. Telefon o sırada kapalıysa denetim açılınca yapılır.
-Telefon yeniden başlayınca bildirim sessizce geri gelir.
+ya da bildirimdeki **Ayrıntıları göster** düğmesine dokununca Watchdog açılır: Ayarlar ve Otomatik Engelleyici aynı
+ekranda görünür, ayarları kapatırken Otomatik Engelleyici unutulmaz. Ekranda bir ayarın satırına dokununca o ayar
+açılır. Ayarı kapatana dek bildirim yerinde kalır, her aralıkta yeniden uyarır. Telefon o sırada kapalıysa denetim
+açılınca yapılır. Telefon yeniden başlayınca bildirim sessizce geri gelir.
 
 Ayar açarken ya da uygulamayı açtığınızda bildirim gelmez. Uygulama yalnız aralık dolunca uyarır.
 
@@ -93,15 +93,20 @@ okunabilen telefonlarda kapalı Otomatik Engelleyici aralık dolunca ayrıca hat
 
 ### Ana ekran
 
-Ana ekran dört ayarın şu anki durumunu, son ve sonraki denetim zamanını gösterir. Dokunulabilen her satırın sağında ok
-vardır. Bir ayarın satırına dokununca o ayar açılır, USB ve kablosuz hata ayıklamada sayfa doğrudan o ayara kayar. Pil
-ayarında uygulama kısıtlanmışsa ya da Android uzun süre açılmayan uygulamayı duraklatabilecekse ana ekran bunu söyler ve
-ilgili ayar sayfasını açar.
+Ana ekranda önce durum gelir: Kaç ayarın açık kaldığını ve son denetimin ne zaman yapıldığını söyleyen bir kart, her
+ayar için renkli bir satır (açık kalan turuncu, kapalı yeşil, durumu okunamayan Otomatik Engelleyici mavi) ve
+**Denetle** düğmesi. Altında Ayarlar (sonraki denetimle birlikte denetim aralığı, dil, tema) ve Hakkında (uygulamanın ne
+olduğu ve ne olmadığı, sürümü ve geliştiricisi) bölümleri vardır. Dokunulabilen her satırın sağında ok vardır. Bir
+ayarın satırına dokununca o ayar açılır, USB ve kablosuz hata ayıklamada sayfa doğrudan o ayara kayar. Pil ayarında
+uygulama kısıtlanmışsa ya da Android uzun süre açılmayan uygulamayı duraklatabilecekse ana ekran bunu söyler ve ilgili
+ayar sayfasını açar.
 
-### Dil
+### Dil ve tema
 
 Uygulama İngilizce ve Türkçe kullanılabilir. Varsayılan dil İngilizcedir, telefonun dili ne olursa olsun İngilizce açılır.
-Dil ana ekrandaki **Uygulama › Dil** satırından değiştirilir. Ekran ve bildirimler seçilen dile geçer.
+Dil ana ekrandaki **Ayarlar › Dil** satırından değiştirilir. Ekran ve bildirimler seçilen dile geçer.
+
+Ekran telefonun açık ya da koyu moduna uyar. **Ayarlar › Tema** ile hep açık ya da hep koyu yapılabilir.
 
 ## Güncelleme
 
@@ -111,14 +116,14 @@ Uygulama kendini güncellemez. Yeni sürümün APK'sını indirip eskisinin üst
 
 Uygulamanın internet izni yoktur, hiçbir veri telefondan çıkmaz. Hangi uygulamaların bilinmeyen uygulama
 yükleyebildiğini görmek için denetim anında telefondaki uygulamalara bakar, bu liste saklanmaz. Telefonda yalnız
-seçtiğiniz aralık ve dil, son ve sonraki denetim zamanı, bildirim izninin sorulup sorulmadığı ve bekleyen bir Otomatik
-Engelleyici hatırlatması olup olmadığı saklanır. Bu kayıt buluta yedeklenmez ve yeni telefona aktarılmaz. Telemetri
-yoktur.
+seçtiğiniz aralık, dil ve tema, son ve sonraki denetim zamanı, bildirim izninin sorulup sorulmadığı ve bekleyen bir
+Otomatik Engelleyici hatırlatması olup olmadığı saklanır. Bu kayıt buluta yedeklenmez ve yeni telefona aktarılmaz.
+Telemetri yoktur.
 
 ## Üçüncü taraf bileşenler
 
 Watchdog Android'in kendi sınıflarını ve Kotlin'in standart kütüphanesini (JetBrains, Apache-2.0) kullanır. Başka hiçbir
-pakete bağlı değildir.
+pakete bağlı değildir. Simgeleri Material Icons'tandır (Google, Apache-2.0).
 
 ## Otomatik denetimler
 

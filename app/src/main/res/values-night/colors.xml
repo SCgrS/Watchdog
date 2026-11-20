@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Dark theme colors: A graphite neutral ramp. The tints are the meaning colors laid over the card at 12 to 13 percent,
+    written as opaque colors so tiles look the same on every surface.
+-->
+<resources>
+    <color name="background">#FF111214</color>
+    <color name="card">#FF1B1C1F</color>
+    <color name="card_raised">#FF232428</color>
+    <color name="choice_selected">#FF2C2E31</color>
+    <color name="divider">#FF2A2C2F</color>
+    <color name="divider_strong">#FF3B3D41</color>
+
+    <color name="text">#FFECEDEE</color>
+    <color name="text_secondary">#FFA9ABAF</color>
+    <color name="text_muted">#FF7D8085</color>
+
+    <color name="brand_button">#FFC8431F</color>
+    <color name="on_brand">#FFFFFFFF</color>
+    <color name="link">#FF8AB4F8</color>
+
+    <color name="accent">#FF5FBF8C</color>
+
+    <color name="risk_text">#FFF0B357</color>
+    <color name="risk_tint">#FF362E24</color>
+    <color name="risk_line">#FF564226</color>
+    <color name="risk_solid">#FFE9A94B</color>
+    <color name="on_risk">#FF1A1206</color>
+
+    <color name="safe_text">#FF6FCF9B</color>
+    <color name="safe_tint">#FF232F2C</color>
+    <color name="safe_line">#FF274236</color>
+    <color name="safe_solid">#FF5FBF8C</color>
+    <color name="on_safe">#FF0C2618</color>
+
+    <color name="info_text">#FFA9BDE4</color>
+    <color name="info_tint">#FF272C37</color>
+    <color name="info_line">#FF33405A</color>
+    <color name="info_solid">#FF7A98D6</color>
+    <color name="on_info">#FF0E1830</color>
+</resources>

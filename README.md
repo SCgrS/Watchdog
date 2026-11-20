@@ -14,8 +14,8 @@ easy to forget, and the phone stays unprotected for days. Watchdog checks these 
 turn the settings off yourself: The app cannot change any setting.
 
 <p align="center">
-  <img src="docs/screen-main.png" width="45%" alt="Main screen: USB debugging on, wireless debugging off, Auto Blocker unknown, with a Check button and the check interval below">
-  <img src="docs/screen-language.png" width="45%" alt="Language window: English selected with a green ring, Türkçe below, and Cancel">
+  <img src="docs/screen-main.png" width="45%" alt="Main screen: 2 settings left on, USB debugging on, wireless debugging off, Install unknown apps on for one app, Auto Blocker explained, the Check button and Settings below">
+  <img src="docs/screen-language.png" width="45%" alt="Language window over Settings: English selected with a green ring, Türkçe below, and Cancel">
 </p>
 
 ## Installation
@@ -45,7 +45,8 @@ To build the app from its source code, see [docs/DEVELOPMENT.md](docs/DEVELOPMEN
   service, no device admin, no Shizuku, no root and no `INTERNET` permission. It only reads settings, shows a
   notification and opens the matching settings page. You turn the settings off yourself. It asks for only two
   permissions: Showing notifications and setting up the check again when the phone starts.
-- **Two settings:** You choose the check interval (from every hour to every week) and the language (English or Turkish).
+- **Three settings:** You choose the check interval (from every hour to every week), the language (English or
+  Turkish) and the theme (light, dark or following the phone).
 - **Quiet when off:** The notification goes away as soon as you turn the setting off. For Install unknown apps, it goes
   when you come back to Watchdog.
 - **Light:** It does not run in the background all the time. The system wakes it for a moment at check time. The package
@@ -57,11 +58,10 @@ To build the app from its source code, see [docs/DEVELOPMENT.md](docs/DEVELOPMEN
 
 When the interval you chose is over, the app looks at USB debugging, wireless debugging and Install unknown apps. If one
 is on, a notification appears. Its title names the setting that is on, or says how many are on. Tapping the notification
-opens Watchdog: The settings and Auto Blocker are on the same screen, so Auto Blocker is not forgotten while you turn
-the settings off. Tapping a setting's row on the screen opens that setting. The **Auto Blocker** button in the
-notification opens its page directly. The notification stays until you turn the setting off and alerts you again at
-every interval. If the phone is off at that time, the check runs when it starts. After a restart the notification comes
-back silently.
+or its **Show details** button opens Watchdog: The settings and Auto Blocker are on the same screen, so Auto Blocker is
+not forgotten while you turn the settings off. Tapping a setting's row on the screen opens that setting. The
+notification stays until you turn the setting off and alerts you again at every interval. If the phone is off at that
+time, the check runs when it starts. After a restart the notification comes back silently.
 
 No notification appears while you change settings or when you open the app. The app alerts you only when the interval
 is over.
@@ -96,15 +96,20 @@ read, Auto Blocker being off is also reminded when the interval is over.
 
 ### Main screen
 
-The main screen shows the current state of the four settings, with the time of the last and the next check. Every row
-that can be tapped has a chevron on the right. Tapping a setting's row opens that setting, and for USB and wireless
-debugging the page scrolls straight to it. If the app is restricted in battery settings, or if Android may pause an app
-that is not opened for a long time, the main screen says so and opens the right settings page.
+The main screen puts the status first: A card that says how many settings are left on, when the last check was, one
+colored row per setting (amber left on, green off, blue for Samsung's Auto Blocker, which cannot be read) and the
+**Check** button. Below are Settings (check interval with the next check, language, theme) and About (what the app is
+and is not, its version and the developer). Every row that can be tapped has a chevron on the right. Tapping a setting's
+row opens that setting, and for USB and wireless debugging the page scrolls straight to it. If the app is restricted in
+battery settings, or if Android may pause an app that is not opened for a long time, the main screen says so and opens
+the right settings page.
 
-### Language
+### Language and theme
 
 The app can be used in English and Turkish. The default is English, whatever the phone's language. Change it in the
-**App › Language** row on the main screen. The screen and the notifications switch to the chosen language.
+**Settings › Language** row on the main screen. The screen and the notifications switch to the chosen language.
+
+The screen follows the phone's light or dark mode. **Settings › Theme** can fix it to light or dark.
 
 ## Updating
 
@@ -114,15 +119,14 @@ kept.
 ## Privacy
 
 The app has no internet permission, no data leaves the phone. To see which apps may install unknown apps, it looks at
-the apps on the phone during a check. That list is not stored. The phone keeps only the interval and language you chose,
-the time of the last and the next check, whether notification permission was asked and whether an Auto Blocker reminder
-is waiting. This record is not backed up to the cloud and is not moved to a new phone.
-There is no telemetry.
+the apps on the phone during a check. That list is not stored. The phone keeps only the interval, language and theme you
+chose, the time of the last and the next check, whether notification permission was asked and whether an Auto Blocker
+reminder is waiting. This record is not backed up to the cloud and is not moved to a new phone. There is no telemetry.
 
 ## Third-party components
 
 Watchdog uses Android's own classes and the Kotlin standard library (JetBrains, Apache-2.0). It depends on no other
-package.
+package. Its icons are from Material Icons (Google, Apache-2.0).
 
 ## Automated checks
 
