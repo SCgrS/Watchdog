@@ -59,7 +59,7 @@ In Git Bash, in the project folder:
   removing the app (its interval, language and battery setting would have to be set again).
 - For a release, the package is copied to `dist/` (ignored by Git) and attached to the GitHub release as `Watchdog.apk`.
   The README's download link points to `releases/latest/download/Watchdog.apk`, so the file name stays the same in every
-  release. The version is `versionName` (0.1.2) and `versionCode` (5) in `app/build.gradle.kts`. Every release raises
+  release. The version is `versionName` (0.1.4) and `versionCode` (7) in `app/build.gradle.kts`. Every release raises
   both: `versionCode` by one, `versionName` in its last digit. GitHub and Google Play share the numbers: Play accepts
   an upload only with a `versionCode` higher than every earlier upload.
 - Unit tests run only for the debug variant (`testDebugUnitTest`, the AGP 9 default).
@@ -115,8 +115,11 @@ The app is published on Google Play as well as on GitHub. The package name `com.
   Google Play › Automatic protection), so Play adds no installer check code of its own and the delivered app runs the
   same code as this repository.
 - **Words:** The listing does not claim that the app protects the phone (it only reminds), does not suggest installing
-  apps from outside Play, and says that Watchdog is not affiliated with Samsung. The title is plain "Watchdog": Play
-  allows several apps with the same title, and other apps called Watchdog already exist there.
+  apps from outside Play, and says that Watchdog is not affiliated with Samsung. The title is "Watchdog: Security
+  Reminder" in English and "Watchdog: Güvenlik Bildiricisi" in Turkish (the owner's choice, 2026-11-20, 30 characters at
+  most): Other apps called Watchdog exist on Play. The README's heading carries the same name. On the phone the app is
+  still called "Watchdog". Play Console still shows plain "Watchdog": The owner decided on 2026-11-20 to change it there
+  together with the next update.
 
 ## Security setup
 
@@ -370,6 +373,9 @@ dark). The status card is the main element of the screen.
   the mode for the app and recreates the screen. Status and navigation bar icons follow (`@bool/light_bars`).
 - **Icons:** Material Icons (Google, Apache-2.0), 24 dp vectors in `res/drawable/ic_*.xml`, colored where they are
   used. The logo in the header (`ic_logo.xml`) is the launcher icon's visible part on a rounded vermilion square.
+- **Equal tiles:** `TileColumn` gives the tiles of USB debugging, wireless debugging and Install unknown apps the
+  height of the tallest, so they read as cards of one size when a long name wraps. Auto Blocker's tile keeps its own.
+- The Check button sits 12 dp from the card's edges, so the corners nest (28 dp card, 16 dp button).
 - **Links:** Only the developer's address is a link (`URLSpan`, underlined, `@color/link`). It opens in the browser.
 - Since Android 15 the screen is drawn edge to edge. Scrolled content is cut below the status bar and the last row ends
   above the navigation bar.

@@ -149,17 +149,23 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
+            <com.cgrshn.watchdog.TileColumn
                 android:id="@+id/status_rows"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
-            <!-- Manual check: The settings are read right away, the result is told in a short message. -->
+            <!--
+                Manual check: The settings are read right away, the result is told in a short message. 12 dp from the
+                card's edges (6 dp card padding and 6 dp margin), so the corners nest: 28 dp card, 16 dp button.
+            -->
             <Button
                 android:id="@+id/check_button"
                 style="@style/ButtonBrand"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp"
                 android:text="@string/check" />
         </LinearLayout>
 
@@ -275,6 +281,7 @@
 
         <LinearLayout style="@style/Card">
 
+            <!-- Three paragraphs, separated by line breaks. -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

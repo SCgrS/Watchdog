@@ -1,4 +1,4 @@
-# Watchdog
+# Watchdog: Güvenlik Bildiricisi
 
 [English](README.md)
 

@@ -19,7 +19,7 @@
     <string name="location_special_access">Apps › Special access</string>
     <string name="location_security">Security and privacy</string>
     <!-- Under Auto Blocker on Samsung phones, which do not let apps read it. -->
-    <string name="auto_blocker_note">A Samsung setting that cannot be checked. Keep it on for better security. Tap to open it.</string>
+    <string name="auto_blocker_note">A Samsung setting that cannot be checked. Keep it on for better security.</string>
     <string name="state_on">On</string>
     <string name="state_off">Off</string>
     <string name="state_unknown">Unknown</string>
@@ -57,7 +57,8 @@
 
     <!-- About -->
     <string name="about_title">About</string>
-    <string name="about_text">Watchdog is not an antivirus app. It only reminds you whether the settings opened to install apps from outside the official store are still on. It cannot turn settings on or off and does not connect to the internet. It checks automatically at the interval you choose, when you open the app and when you tap Check.</string>
+    <!-- Three paragraphs, separated by line breaks. -->
+    <string name="about_text">Watchdog is not an antivirus app. It only reminds you whether the settings opened to install apps from outside the official store are still on.\nIt cannot turn settings on or off and does not connect to the internet.\nIt checks automatically at the interval you choose, when you open the app and when you tap Check.</string>
     <string name="version_line">Version: %1$s</string>
     <!-- Followed by the developer's address as a link. -->
     <string name="developer_label">Developer:</string>

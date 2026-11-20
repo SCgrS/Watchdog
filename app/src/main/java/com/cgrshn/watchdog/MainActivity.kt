@@ -187,6 +187,8 @@ class MainActivity : Activity() {
                 val single = lastSnapshot?.installers?.singleOrNull()?.packageName
                 SettingsPages.open(this, info.page, app = if (info.page == Page.UNKNOWN_APPS) single else null)
             }
+            // Every tile but Auto Blocker's has the height of the tallest (TileColumn).
+            if (info.key != ROW_AUTO_BLOCKER) row.tag = TileColumn.EQUAL
             container.addView(row)
             rows[info.key] = row
             locations[info.key] = info.location
