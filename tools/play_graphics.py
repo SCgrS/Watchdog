@@ -41,14 +41,14 @@ SAMSUNG_MASK = "M99,50C99,6.935,77.063,1,50,1C22.935,1,1,6.935,1,50c0,43.063,21.
 
 TEXTS = {
     "en-US": {
-        "tagline": "Reminds you of debugging settings left on",
+        "tagline": "Reminds you of debugging and unknown app installs left on",
         "rows": [("USB debugging", "Developer options", "On", "risk"),
                  ("Wireless debugging", "Developer options", "Off", "safe")],
         "shots": [("docs/screen-main.png", "Debugging left on?<br>Watchdog reminds you."),
                   ("docs/screen-language.png", "English or Turkish,<br>chosen in the app.")],
     },
     "tr-TR": {
-        "tagline": "Açık unutulan hata ayıklama ayarlarını hatırlatır",
+        "tagline": "Açık kalan hata ayıklamayı ve bilinmeyen uygulama iznini hatırlatır",
         "rows": [("USB hata ayıklama", "Geliştirici seçenekleri", "Açık", "risk"),
                  ("Kablosuz hata ayıklama", "Geliştirici seçenekleri", "Kapalı", "safe")],
         "shots": [("docs/screen-main-tr.png", "Hata ayıklama açık mı kaldı?<br>Watchdog hatırlatır."),
